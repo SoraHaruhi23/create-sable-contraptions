@@ -15,8 +15,6 @@
 
 **安装：** 将普通 JAR 放入 `mods`，移除旧版；多人客户端与服务端使用相同版本。配置入口：**Mods → Create: Sable Contraptions → 配置**。
 
-**升级：** 0.7.4～0.7.6-alpha 可直接升级。旧名称版本的数据须先通过 [0.7.3-alpha 转换](docs/MIGRATION-0.7.3.md)。升级前请备份存档。
-
 当前为 Beta。复杂耦合、第三方组件和长期性能仍需测试。问题反馈请附版本、复现步骤及日志。
 
 ## English
@@ -31,8 +29,6 @@ Brings Create contraptions into Sable physics while retaining their controls and
 **Requirements:** Minecraft 1.21.1, Java 21, NeoForge 21.1.228+, Create 6.0.10+, and Sable 2.0.3+. Compatibility with newer dependency versions is not guaranteed.
 
 **Installation:** Place the regular JAR in `mods` and remove the previous version. Use matching versions on clients and servers. Configuration: **Mods → Create: Sable Contraptions → Config**.
-
-**Upgrading:** Upgrade directly from 0.7.4–0.7.6-alpha. Data from the former mod ID requires [migration through 0.7.3-alpha](docs/MIGRATION-0.7.3.md). Back up your world first.
 
 Beta release. Complex coupling, third-party components, and long-running performance need further testing. Include versions, reproduction steps, and logs in bug reports.
 
