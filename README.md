@@ -34,6 +34,8 @@ Beta release. Complex coupling, third-party components, and long-running perform
 
 ## 开发与文档 / Development & docs
 
+本项目使用 GPT 辅助开发。 / This project was developed with assistance from GPT.
+
 Build with Java 21 / 使用 Java 21 构建：
 
 ```powershell
