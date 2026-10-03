@@ -1,114 +1,54 @@
 # Create: Sable Contraptions
 
-将 Create（机械动力）的动态结构接入 Sable 物理子世界，继续使用 Create 的控制器与移动工作行为。
+**机械动力：物理动态结构 · 0.7.6-beta.1**
 
-**当前版本：0.7.6-beta.1。** 首个 Beta，作者反馈当前测试未发现问题并同意进入 beta；仍不代表全部场景验证完成。普通 Create 列车不进入物理化范围。
+## 中文
 
-中文名：**机械动力：物理动态结构**。Mod ID 为 `create_sable_contraptions`。自 0.7.4-alpha 起不再读取旧名称数据或自动迁移旧配置；请使用已由 0.7.3-alpha 转换并保存的存档和矿车物品，或新存档。尚未转换的数据应先使用 [0.7.3 迁移版](docs/MIGRATION-0.7.3.md)。本版已由作者明确批准进入 beta，仍继续收集测试反馈。
+将 Create 动态结构接入 Sable 物理系统，保留原有控制方式和工作部件行为。
 
-## 支持范围
+- 支持电梯、三类轴承、绳索滑轮、动力活塞、龙门、矿车结构及稳定子结构。
+- 支持碰撞停转、运行中编辑、真实库存与流体访问，以及便携式接口对接。
+- 提供工程师护目镜状态提示和游戏内配置，界面支持简中、繁中、英语、日语。
+- 普通 Create 列车不在物理化范围内。
 
-| 机构 | 当前实现 |
-| --- | --- |
-| 电梯 | 原楼层控制、滚轮选层、右键确认、楼层显示和绳索跟随 |
-| 机械轴承、风车轴承、时钟轴承 | 旋转目标、归位规则、风车发电、时钟双指针 |
-| 普通绳索滑轮、动力/黏性动力活塞 | 原行程与放置规则 |
-| 龙门轴与龙门滑块 | 沿轴运动、反向及原控制流程 |
-| 矿车装配结构、稳定子结构 | 结构跟随、装拆、物品收起/恢复及子结构碰撞传播 |
+**环境：** Minecraft 1.21.1、Java 21、NeoForge 21.1.228+、Create 6.0.10+、Sable 2.0.3+。较新依赖版本不保证兼容。
 
-上述为代码实现范围，不代表所有组合都已通过游戏验证。机构在装配时转换，已有非物理动态结构不会因安装本 Mod 自动转换。
+**安装：** 将普通 JAR 放入 `mods`，移除旧版；多人客户端与服务端使用相同版本。配置入口：**Mods → Create: Sable Contraptions → 配置**。
 
-共用行为包括：
+**升级：** 0.7.4～0.7.6-alpha 可直接升级。旧名称版本的数据须先通过 [0.7.3-alpha 转换](docs/MIGRATION-0.7.3.md)。升级前请备份存档。
 
-- 与世界方块及其他物理结构进行阻挡检查，遇阻停止，解除后重新检测并恢复。矿车包含平移与转向组合扫掠。
-- 支持运行中增删方块、真实库存/流体能力、红石和 Create 移动行为。具有 MovementBehaviour 的工作部件沿用移动工作流程；普通动力机器仍需要动力。
-- 保留 Create 移动门的停靠/出发规则；便携式存储接口接近固定接口时快速减速、停止传输、再加速离开。
-- 钻头处理自身运动轨迹中符合前向限制的阻挡目标。禁止破坏本结构家族、所属控制器，以及矿车沿途装配站等受保护源头。
-- 工程师护目镜显示运动/停转及原因，并可高亮阻挡方块。支持简体中文、繁体中文、英语和日语的常规界面。
-- 禁止在本 Mod 管理的结构上启动物理组装器；通过原 Create 控制部件拆卸。
+当前为 Beta。复杂耦合、第三方组件和长期性能仍需测试。问题反馈请附版本、复现步骤及日志。
 
-## 安装与兼容
+## English
 
-需要 Java 21、Minecraft 1.21.1 和 NeoForge。将 `create-sable-contraptions-0.7.6-beta.1.jar` 放入实例的 `mods` 目录，移除本 Mod 旧版；不要安装 `-sources.jar`。多人使用时客户端和服务端均需安装，并保持本 Mod 版本一致。首次尝试请使用存档副本。
+Brings Create contraptions into Sable physics while retaining their controls and movement behaviors.
 
-| 依赖 | 加载声明 | 本地验证范围 |
-| --- | --- | --- |
-| Minecraft | 1.21.1 | 1.21.1 |
-| NeoForge | 21.1.228+ | 21.1.228 构建基线 |
-| Create | 6.0.10+ | 6.0.10 Maven/正式包、6.0.11 |
-| Sable | 2.0.3+ | 2.0.3、2.0.5，具体组合见下表 |
+- Supports elevators, mechanical/windmill/clockwork bearings, rope pulleys, mechanical pistons, gantries, minecart contraptions, and stabilized children.
+- Includes collision stopping, editing while moving, live inventory/fluid access, and portable interface docking.
+- Offers goggle status hints and in-game configuration, with Simplified Chinese, Traditional Chinese, English, and Japanese UI.
+- Regular Create trains are outside the conversion scope.
 
-各依赖仍须满足自身要求。允许较新版本加载不等于已验证所有未来版本；这里的验证以编译、几何和字节码契约检查为主。
+**Requirements:** Minecraft 1.21.1, Java 21, NeoForge 21.1.228+, Create 6.0.10+, and Sable 2.0.3+. Compatibility with newer dependency versions is not guaranteed.
 
-## 游戏内配置与诊断
+**Installation:** Place the regular JAR in `mods` and remove the previous version. Use matching versions on clients and servers. Configuration: **Mods → Create: Sable Contraptions → Config**.
 
-入口：**Mods → Create: Sable Contraptions → 配置**。
+**Upgrading:** Upgrade directly from 0.7.4–0.7.6-alpha. Data from the former mod ID requires [migration through 0.7.3-alpha](docs/MIGRATION-0.7.3.md). Back up your world first.
 
-- 客户端：护目镜 HUD、原因显示、碰撞高亮，默认开启。
-- 服务端：轴承对静态世界方块的旋转容差，默认 `1/1024` 格，范围 `0.00001～1/256`；不改变 Sable 物理体大小或矿车碰撞。
-- 服务端：开发碰撞诊断记录开关。关闭后仍执行碰撞并记录 HUD 原因。
+Beta release. Complex coupling, third-party components, and long-running performance need further testing. Include versions, reproduction steps, and logs in bug reports.
 
-客户端配置位于实例 `config/create_sable_contraptions-client.toml`，服务端配置位于存档 `serverconfig/create_sable_contraptions-server.toml`。单人可编辑当前世界服务端配置；远程多人服务器的规则由管理员管理，客户端不能通过配置页覆盖。
+## 开发与文档 / Development & docs
 
-`/csc cart_status`、`/csc bearing_status` 用于读取最近检测信息。详细开发诊断正文仍为中文，常规界面随游戏语言切换。
-
-## 数据与拆卸
-
-真实方块实体承载库存，Create 移动行为通过实时能力视图访问；不另外保留一套用于拆卸的库存副本。其他或仅有方向性的第三方库存能力不保证能进入公共库存。
-
-拆卸先检查落位。电梯目前要求目标为空；轴承、矿车等共用拆卸路径允许按现有替换规则清除可破坏的占位方块（包括铁轨），掉落遵循 Create 的 `noDropWhenContraptionReplaceBlocks` 配置；不可破坏目标、冲突或不可用区块会阻止拆卸。装配站虚拟锚点和活塞缸体槽位另行处理，因此并非“目标必须全部为空”。
-
-嵌套矿车恢复在整组成功后提交；同步异常或加入拒绝时尝试逆序释放新资源并保留物品快照。这不等于跨文件保存、断电或第三方异常情况下的绝对无损保证。
-
-## 验证状态
-
-当前构建产物对应 **160 项检查 × 4 组依赖 = 640 次通过**。这些是同一套检查在不同依赖上的执行次数，不是 640 个独立游戏场景。
-
-| 任务 | Sable | Create | 结果 |
-| --- | --- | --- | --- |
-| test | 2.0.3 | 6.0.10-280 Maven | 160/160 |
-| testCreate6010Release | 2.0.3 | 6.0.10 正式包 | 160/160 |
-| testCreate6011 | 2.0.3 | 6.0.11-300 Maven | 160/160 |
-| testSable205Create6011 | 2.0.5 | 6.0.11-300 Maven | 160/160 |
-
-包含几何、数据辅助逻辑、恢复事务故障注入、Mixin/调用链接契约和四语言键/占位符检查。四份语言文件各 35 项。报告位于 `build/reports/tests/<任务名>/index.html`。
-
-开发侧没有启动 Minecraft、服务端或 GameTest。用户曾确认控制器、矿车高度、移动缓慢及放置卡顿等具体问题修复；这些反馈不能替代最新版全量回归。待验收项目及反馈格式见 [验证与已知限制](docs/VALIDATION.md)。
-
-## 已知限制
-
-- 多人重连、跨区块重载、服务器重启、复杂耦合矿车和多层子结构缺少系统验证；普通列车也尚未完成实机回归。
-- 其他物理结构按当前姿态参与检测，未完整求解双方同时高速运动；大型结构可能因检测预算不足而停止。持续加载及多结构长期运行的性能未量化。
-- 不能任意在另一 Sable 物理结构内启动新机构；稳定子结构的受支持路径不等于通用嵌套装配。
-- 爆炸、命令或第三方直接移除工作部件时，临时持有物品的回收仍有限制；同步回滚不保证进程崩溃原子性。
-- Simulated 物理组装器为可选保护集成，其二进制不在当前四组验证矩阵内。
-- 原有关键装配进度奖励调用保留，没有全局禁用进度；涉及物理区坐标或自动化身份的特定进度未全面验证。
-- 本 Mod 为首个 beta。暂不宣称所有 Create 行为或第三方组件完全兼容。
-
-## 从源码构建
-
-Java 21 环境下：
+Build with Java 21 / 使用 Java 21 构建：
 
 ```powershell
 ./gradlew.bat build --console=plain
 ```
 
-仓库附带 Gradle Wrapper；首次构建需要联网下载依赖。Windows 也可使用辅助脚本：
+160 checks across four dependency combinations: 640 passes. These are non-game checks. / 160 项非游戏检查在四组依赖上共通过 640 次。
 
-```powershell
-./scripts/build.ps1 -JavaHome 'C:\path\to\jdk-21'
-```
+[发布说明 / Release notes](docs/RELEASE-0.7.6-beta.1.md) · [更新记录 / Changelog](CHANGELOG.md) · [测试与限制 / Testing & limitations](docs/VALIDATION.md) · [GitHub 教程 / GitHub guide](docs/GITHUB-QUICKSTART.md)
 
-缓存齐全时可加 `-Offline`。产物位于 `build/libs/`。上述构建运行非游戏检查，不启动游戏。
+**License: [LGPL-3.0-or-later](LICENSE).** [Third-party notices / 第三方说明](THIRD_PARTY_NOTICES.md).
 
-## 项目文档与来源
+社区兼容扩展，非 Create 或 Sable 官方项目。 / A community addon, not an official Create or Sable project.
 
-- [首个 Beta 发布说明](docs/RELEASE-0.7.6-beta.1.md) · [新建 GitHub 仓库教程](docs/GITHUB-QUICKSTART.md) · [发布前检查](docs/REVIEW-0.7.6-beta.1.md)。
-- [更新记录](CHANGELOG.md)：按版本保留历史变更。
-- [验证与已知限制](docs/VALIDATION.md)：回归清单、测试边界、问题反馈信息。
-- [仓库与发布准备](docs/PUBLISHING.md)：GitHub 仓库、发布附件和许可证说明。
-- [0.7.0 审查](docs/REVIEW-0.7.0.md)、[0.7.1 审查](docs/REVIEW-0.7.1.md)：当时的技术结论，后续状态以本页和更新记录为准。
-- [历史 README](docs/HISTORY-README.md)：归档的详细开发过程，不作为当前使用说明。
-- [Create](https://github.com/Creators-of-Create/Create)、[Sable](https://github.com/ryanhcode/sable)：上游项目。
-
-本项目为社区兼容扩展，不隶属于 Create 或 Sable。本项目原创内容采用 **LGPL-3.0-or-later**（LGPL 第 3 版或任何后续版本）。授权声明见 [LICENSE](LICENSE)，完整条款见 [COPYING.LESSER](COPYING.LESSER) 与 [COPYING](COPYING)。第三方内容不在重新授权范围内，见 [第三方说明](THIRD_PARTY_NOTICES.md)。

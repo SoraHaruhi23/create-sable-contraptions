@@ -1,34 +1,34 @@
 # Create: Sable Contraptions 0.7.6-beta.1
 
-首个 Beta，适用于 Minecraft 1.21.1 / NeoForge。中文名：机械动力：物理动态结构。
+## 中文
 
-本版在 0.7.6-alpha 基础上进入公开测试阶段，保持相同的运行逻辑与新格式数据。作者反馈当前测试未发现问题，并明确同意进入 beta；这不代表所有多人、长期运行和第三方组合均已验证。
+首个 Beta，延续 0.7.6-alpha 的功能与数据格式。
 
-## 功能范围
+- 支持电梯、轴承、滑轮、动力活塞、龙门、矿车及稳定子结构的物理化。
+- 包含碰撞停转、真实库存与流体访问、接口对接、护目镜提示和四语言配置界面。
+- 包含储罐更新和接口两端伸缩动画修复；普通列车不转换。
 
-- 将电梯、机械/风车/时钟轴承、绳索滑轮、动力/黏性动力活塞、龙门、矿车及受支持的稳定子结构接入 Sable 物理子世界。
-- 保留 Create 控制、工作部件行为、运行中编辑、真实库存与流体访问；遇阻停转，清除障碍后重试。
-- 便携式接口快速减速对接、传输、加速离开；包含储罐更新和两端接口伸缩动画修复。
-- 钻头保护所属结构及控制器、矿车装配站；阻止对已管理结构再次使用物理组装器。
-- 工程师护目镜显示停转原因及可选障碍高亮；Mods 配置入口，简中、繁中、英语、日语界面。
-- 普通 Create 列车不在物理化范围内。
+**环境：** Minecraft 1.21.1、Java 21、NeoForge 21.1.228+、Create 6.0.10+、Sable 2.0.3+。
 
-## 安装与升级
+安装普通 JAR，移除旧版；客户端与服务端保持版本一致。0.7.4～0.7.6-alpha 可直接升级，旧名称版本须先通过 0.7.3-alpha 转换。升级前备份存档。
 
-需要 Java 21、Minecraft 1.21.1、NeoForge 21.1.228+、Create 6.0.10+、Sable 2.0.3+，以及各依赖自身要求的组件。未来版本允许加载不等于已验证。
+四组依赖共通过 **640 次非游戏检查**。复杂耦合、长期性能及第三方兼容仍需测试。反馈请附版本、复现步骤和日志。
 
-安装 `create-sable-contraptions-0.7.6-beta.1.jar`，移除本 Mod 旧 JAR。多人客户端与服务端保持相同版本。`-sources.jar` 和 `-source.zip` 是开发源码，不能放入 mods。
+## English
 
-0.7.4～0.7.6-alpha 的新格式数据可直接继续使用，无新增迁移。旧 ID `sable_physical_contraptions` 的存档及矿车物品必须先通过 0.7.3-alpha 转换并保存；本版没有旧格式读取或旧配置复制。仅进入一次世界无法转换未加载实体及尚未放置的矿车物品。升级前保留完整存档备份。
+First Beta, retaining the features and data format of 0.7.6-alpha.
 
-## 验证与边界
+- Physical conversion for elevators, bearings, pulleys, mechanical pistons, gantries, minecart contraptions, and stabilized children.
+- Collision stopping, live inventory/fluid access, interface docking, goggle hints, and configuration with four UI languages.
+- Includes fluid tank update and interface animation fixes. Regular trains are not converted.
 
-160 项非游戏检查在四组依赖上共 640 次通过：Sable 2.0.3 + Create 6.0.10 Maven、6.0.10 正式包、6.0.11，以及 Sable 2.0.5 + Create 6.0.11。覆盖几何、恢复故障注入、Mixin/调用契约、储罐与接口维护路径和四语言资源。
+**Requirements:** Minecraft 1.21.1, Java 21, NeoForge 21.1.228+, Create 6.0.10+, and Sable 2.0.3+.
 
-开发侧未启动游戏、服务器或 GameTest。多人重连、复杂耦合/多层子结构、高速相向物理体、长期性能、第三方库存和特殊进度仍缺少完整验收记录。恢复回滚不提供跨文件保存或断电原子性；大型结构可能因检测预算不足停止。此前已丢失的流体不会由旧快照自动回填。
+Install the regular JAR and remove the previous version. Use matching client/server versions. Upgrade directly from 0.7.4–0.7.6-alpha; data from the former mod ID requires migration through 0.7.3-alpha. Back up worlds first.
 
-## 反馈
+**640 non-game checks passed** across four dependency combinations. Complex coupling, long-running performance, and third-party compatibility need further testing. Include versions, reproduction steps, and logs in reports.
 
-请在项目 Issues 中附准确依赖版本、单人/服务器环境、复现步骤、预期与实际结果，以及相关日志。停转问题可附 `/csc cart_status` 或 `/csc bearing_status`；数据问题请注明装拆、收起放置、重载前后的实际数量。
+---
 
-许可证：LGPL-3.0-or-later，第三方内容遵循原许可。发布类型为 **Pre-release / Beta**，不是稳定版。
+**LGPL-3.0-or-later · Pre-release / Beta**
+

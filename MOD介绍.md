@@ -1,59 +1,30 @@
 # Create: Sable Contraptions
 
-**让 Create 的经典机构进入 Sable 物理世界。**
+**机械动力：物理动态结构**
 
-Create: Sable Contraptions 是面向 Minecraft 1.21.1 的 Create 兼容扩展。它将部分 Create 动态结构接入 Sable 子层级，让玩家可以乘坐和操作这些结构，并让它们与世界方块及其他物理结构进行碰撞交互。
+## 中文
 
-本 Mod 延续 Create 原有的控制器、动力与机构行为。它的目标是让熟悉的 Create 机构获得 Sable 物理结构的表现，而不是把它们改造成由玩家直接操控的自由飞行器。
+让熟悉的 Create 机构拥有 Sable 物理结构。
 
-## 它会做什么？
+支持电梯、机械/风车/时钟轴承、滑轮、动力活塞、龙门、矿车及稳定子结构，保留原有控制与移动工作行为。提供碰撞停转、运行中编辑、库存与流体交互、接口对接，以及工程师护目镜状态提示。普通列车不进行物理化。
 
-安装 Mod **不会自动转换世界中已有的动态结构**。当玩家启动受支持的 Create 机构并触发装配流程时，本 Mod 会接管其结构迁移，将结构放入 Sable 子层级，并继续由 Create 控制运动。
+适用于 Minecraft 1.21.1 / NeoForge，需要 Java 21、NeoForge 21.1.228+、Create 6.0.10+ 和 Sable 2.0.3+。
 
-当前支持范围包括：
+当前版本：**0.7.6-beta.1**。安装普通 JAR，客户端和服务端保持版本一致。升级前备份存档；旧名称版本须先经过 0.7.3-alpha 转换。
 
-- Create 电梯
-- 机械轴承、风车轴承和时钟轴承
-- 普通绳索滑轮
-- 动力活塞与黏性动力活塞
-- 龙门滑块
-- 部分矿车结构及稳定子结构
+## English
 
-## 主要特性
+Bring familiar Create contraptions into Sable physics.
 
-- 沿用 Create 原有的控制逻辑、行程与移动工作部件行为，兼容边界见项目 README。
-- 让结构在移动时继续与玩家、方块实体、库存和流体能力交互。
-- 检查结构运动路径上的碰撞；遇到阻挡时暂停，阻挡解除后可继续运动。
-- 支持部分子结构跟随、结构运行时编辑和安全拆卸检查。
-- 钻头可处理自身运动轨迹实际碰到的前方目标。
-- 便携式存储接口接近普通世界中的固定接口时会减速并尝试对接。
+Supports elevators, mechanical/windmill/clockwork bearings, pulleys, mechanical pistons, gantries, minecart contraptions, and stabilized children while retaining their controls and movement behaviors. Features include collision stopping, editing while moving, inventory and fluid access, interface docking, and goggle status hints. Regular trains are not converted.
 
-- 工程师护目镜显示停转原因和阻挡方块高亮；Mods 配置页可调整显示选项。
-- 常规界面支持简体中文、繁体中文、英语和日语。钻头保护装配站与所属控制器。
+For Minecraft 1.21.1 / NeoForge. Requires Java 21, NeoForge 21.1.228+, Create 6.0.10+, and Sable 2.0.3+.
 
-## 依赖与版本
+Current version: **0.7.6-beta.1**. Install the regular JAR and use matching versions on clients and servers. Back up worlds before upgrading; data from the former mod ID requires migration through 0.7.3-alpha.
 
-- Minecraft **1.21.1**
-- **NeoForge** 21.1.228 或兼容版本
-- **Create** 6.0.10 或兼容版本
-- **Sable** 2.0.3 或兼容版本
+---
 
-每个依赖仍须满足其自身的版本要求。不同依赖组合的兼容情况请以项目说明和实际发布页为准。
+[安装与说明 / Installation & details](README.md) · [发布说明 / Release notes](docs/RELEASE-0.7.6-beta.1.md)
 
-## 实验阶段说明
+**LGPL-3.0-or-later**。社区兼容扩展，非官方项目。 / Community compatibility addon; not an official Create or Sable project.
 
-当前开发版本为 **0.7.6-beta.1**。160 项非游戏检查在四组依赖组合上通过，共 640 次。已有用户对部分修复的实机反馈，但尚未完成最新版的系统性游戏内回归。多人同步、复杂碰撞、大型结构性能、部分嵌套结构交互以及保存重载仍可能存在问题。
-
-普通 Create 列车不会自动转换；在另一个 Sable 物理结构内部启动机构也有尚未支持的情形。建议先备份存档，并在测试世界中体验。
-
-## 安装
-
-安装 NeoForge、Create 和 Sable 后，将正式发布的 `create-sable-contraptions-*.jar` 放入实例的 `mods` 文件夹。不要安装 sources 包。
-
-这是由社区开发的兼容扩展，与 Create、Sable 项目及其作者没有隶属关系。各依赖仍由其原作者维护，并受各自许可证约束。
-
-当前功能、依赖矩阵与限制以 [README](README.md) 为准，测试计划见 [验证记录](docs/VALIDATION.md)。
-
-## 许可证
-
-本项目原创内容采用 **LGPL-3.0-or-later**。完整许可与第三方范围见 [LICENSE](LICENSE) 和 [第三方说明](THIRD_PARTY_NOTICES.md)。
