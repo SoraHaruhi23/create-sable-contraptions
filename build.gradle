@@ -1,0 +1,82 @@
+plugins {
+    id 'java-library'
+    id 'net.neoforged.moddev' version '2.0.141'
+}
+
+group = 'dev.createsablecontraptions'
+version = mod_version
+base.archivesName = 'create-sable-contraptions'
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
+    withSourcesJar()
+}
+neoForge {
+    version = '21.1.228'
+    mods {
+        create_sable_contraptions { sourceSet sourceSets.main }
+    }
+}
+repositories {
+    exclusiveContent {
+        forRepository { maven { url = 'https://api.modrinth.com/maven' } }
+        filter { includeGroup 'maven.modrinth' }
+    }
+    mavenCentral()
+    maven { url = 'https://maven.createmod.net' }
+    maven { url = 'https://maven.ithundxr.dev/snapshots' }
+    maven { url = 'https://maven.ryanhcode.dev/releases' }
+    maven { url = 'https://maven.blamejared.com' }
+    maven { url = 'https://raw.githubusercontent.com/Fuzss/modresources/main/maven' }
+}
+configurations {
+    compatCreate6010Release
+    compatCreate6011
+    compatSable205
+}
+dependencies {
+    implementation("com.simibubi.create:create-1.21.1:${create_version}") { transitive = false }
+    implementation("dev.ryanhcode.sable:sable-neoforge-1.21.1:${sable_version}") { transitive = false }
+    implementation('dev.ryanhcode.sable-companion:sable-companion-common-1.21.1:1.6.0') { transitive = false }
+    implementation('net.createmod.ponder:ponder-neoforge:1.0.82+mc1.21.1') { transitive = false }
+    compileOnly('dev.engine-room.flywheel:flywheel-neoforge-api-1.21.1:1.0.6') { transitive = false }
+    compileOnly('com.tterrag.registrate:Registrate:MC1.21-1.3.0+67') { transitive = false }
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.ow2.asm:asm-tree:9.8'
+    testImplementation 'org.joml:joml:1.10.5'
+    compatCreate6010Release('maven.modrinth:create:UjX6dr61') { transitive = false }
+    compatCreate6011('com.simibubi.create:create-1.21.1:6.0.11-300') { transitive = false }
+    compatSable205('dev.ryanhcode.sable:sable-neoforge-1.21.1:2.0.5') { transitive = false }
+}
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+test { useJUnitPlatform() }
+// Test the SAME baseline-compiled classes against newer binaries, without starting Minecraft.
+def compatibilityTest = { String taskName, String createConfig, String sableConfig ->
+    tasks.register(taskName, Test) {
+        testClassesDirs = sourceSets.test.output.classesDirs
+        classpath = sourceSets.test.runtimeClasspath.filter { artifact ->
+            !artifact.name.startsWith('create-1.21.1-') &&
+                    (sableConfig == null || !artifact.name.startsWith('sable-neoforge-1.21.1-'))
+        } + configurations.getByName(createConfig)
+        if (sableConfig != null) classpath += configurations.getByName(sableConfig)
+        useJUnitPlatform()
+        shouldRunAfter tasks.test
+    }
+}
+compatibilityTest('testCreate6010Release', 'compatCreate6010Release', null)
+compatibilityTest('testCreate6011', 'compatCreate6011', null)
+compatibilityTest('testSable205Create6011', 'compatCreate6011', 'compatSable205')
+tasks.named('check') {
+    dependsOn 'testCreate6010Release', 'testCreate6011', 'testSable205Create6011'
+}
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('META-INF/neoforge.mods.toml') { expand(version: project.version) }
+}
+// Distribute the grant and complete terms with both binary and source archives.
+tasks.withType(Jar).configureEach {
+    from(rootProject.projectDir) {
+        include 'LICENSE', 'COPYING', 'COPYING.LESSER', 'THIRD_PARTY_NOTICES.md'
+    }
+}
