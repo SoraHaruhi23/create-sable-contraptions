@@ -58,7 +58,7 @@ git push origin v0.7.6-beta.1
 
 1. Tag 选择 `v0.7.6-beta.1`。
 2. Title 填 `Create: Sable Contraptions 0.7.6-beta.1`。
-3. 正文粘贴 [发布说明](RELEASE-0.7.6-beta.1.md)。
+3. 正文粘贴 [发布说明](../RELEASE-0.7.6-beta.1.md)。
 4. 上传 `build/releases/0.7.6-beta.1/` 中的安装 JAR、sources JAR、完整 source ZIP 和 SHA256SUMS.txt；也可附发布说明文件。
 5. 勾选 **This is a pre-release**，核对后选择 **Publish release**，尚未准备公开可保存 Draft。
 

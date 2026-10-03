@@ -24,7 +24,7 @@ Current version: **0.7.6-beta.1**. Install the regular JAR and use matching vers
 
 ---
 
-[安装与说明 / Installation & details](README.md) · [发布说明 / Release notes](docs/RELEASE-0.7.6-beta.1.md)
+[安装与说明 / Installation & details](../../README.md) · [发布说明 / Release notes](../RELEASE-0.7.6-beta.1.md)
 
 **LGPL-3.0-or-later**。社区兼容扩展，非官方项目。 / Community compatibility addon; not an official Create or Sable project.
 

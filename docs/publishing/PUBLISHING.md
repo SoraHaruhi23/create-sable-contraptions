@@ -2,7 +2,7 @@
 
 当前版本：0.7.6-beta.1。此文是操作建议，不表示仓库或 Release 已创建。
 
-完整操作步骤见 [新建仓库教程](GITHUB-QUICKSTART.md)，可直接粘贴的正文见 [Beta 发布说明](RELEASE-0.7.6-beta.1.md)。发布附件集中在 `build/releases/0.7.6-beta.1/`。
+完整操作步骤见 [新建仓库教程](GITHUB-QUICKSTART.md)，可直接粘贴的正文见 [Beta 发布说明](../RELEASE-0.7.6-beta.1.md)。发布附件集中在 `build/releases/0.7.6-beta.1/`。
 
 ## 建议顺序
 
