@@ -70,7 +70,7 @@ Each dependency must also meet its own loader and version requirements. See the 
 
 Current development version: **0.7.6-beta**.
 
-The same 160 non-game checks pass across four dependency combinations (640 executions). There is user feedback on individual fixes, but systematic in-game regression testing of the latest version is not complete. Bearings, pulleys, pistons, gantries, minecarts, drilling, multiplayer synchronization, and save/reload behavior may still have issues. Large-structure performance and some nested or third-party structure interactions are also not fully verified. Back up your worlds and test in a separate instance.
+There is user feedback on individual fixes, but systematic in-game regression testing of the latest version is not complete. Bearings, pulleys, pistons, gantries, minecarts, drilling, multiplayer synchronization, and save/reload behavior may still have issues. Large-structure performance and some nested or third-party structure interactions are also not fully verified. Back up your worlds and test in a separate instance.
 
 ## Installation
 
