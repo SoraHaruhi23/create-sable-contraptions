@@ -10,7 +10,7 @@
 
 安装普通 JAR，移除旧版；客户端与服务端保持版本一致。升级前备份存档。
 
-164 项非游戏检查在四组依赖上共通过 **656 次**。双矿车过弯、分别乘坐及保存重载仍需游戏内验证。反馈请附版本、复现步骤和日志。
+双矿车过弯、分别乘坐及保存重载仍需游戏内验证。反馈请附版本、复现步骤和日志。
 
 ## English
 
@@ -22,6 +22,6 @@
 
 Install the regular JAR and remove the previous version. Use matching versions on clients and servers. Back up worlds before upgrading.
 
-164 non-game checks passed across four dependency combinations: **656 executions**. Coupled-cart cornering, boarding either cart, and save/reload still need in-game validation. Include versions, reproduction steps, and logs in reports.
+Coupled-cart cornering, boarding either cart, and save/reload still need in-game validation. Include versions, reproduction steps, and logs in reports.
 
 **LGPL-3.0-or-later · Pre-release / Beta**

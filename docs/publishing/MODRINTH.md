@@ -27,4 +27,3 @@ Engineer's goggles display structure status and stop reasons. Options are availa
 ---
 
 **LGPL-3.0-or-later.** 社区兼容扩展，非 Create 或 Sable 官方项目。 / A community addon, not an official Create or Sable project.
-

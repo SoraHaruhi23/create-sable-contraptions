@@ -31,4 +31,3 @@ Include versions, reproduction steps, and logs in reports.
 ---
 
 **LGPL-3.0-or-later · Pre-release / Beta**
-

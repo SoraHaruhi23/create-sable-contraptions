@@ -4,8 +4,6 @@
 
 ## 0.7.7-beta 双矿车修复 / Coupled-cart fix
 
-- 非游戏构建检查通过：164 项测试 × 4 组依赖，共 656 次，零失败。
-- Non-game build checks passed: 164 tests across four dependency combinations, 656 executions with no failures.
 - 游戏内待验证：两辆矿车直线、反向及弯道对齐，分别上下车，保存重载，以及普通链式耦合不受影响。
 - In-game validation pending: alignment on straight tracks, in reverse and on curves; boarding either cart; save/reload; ordinary chain couplings.
 
@@ -15,7 +13,6 @@
 
 ## 已有证据
 
-- 0.7.6-beta 的 160 项非游戏检查在四组依赖上通过，共 640 次；本版结果见上方。矩阵见 [README](../README.md)。
 - 覆盖几何、辅助数据逻辑、恢复事务故障注入和已发布依赖的字节码契约。回滚故障注入测试不运行真实方块实体加载。
 - 用户在此前版本反馈确认：电梯动态结构控制器修复、矿车碰撞高度修复、移动缓慢解决、放置卡顿解决。它们属于具体场景反馈，未自动外推到所有结构或最新版。
 - 开发侧未启动游戏、服务器或 GameTest。最近的转弯扫掠、家族恢复保护及装配源头破坏保护只有代码和非游戏验证。
@@ -26,7 +23,7 @@
 - [ ] 实际传输、重新传输、机构离开、红石停用及目标拆除时，观察两端伸缩；同时检查普通与 Flywheel 渲染。
 - [ ] 物品接口重复上述检查；多人观察时两端动画一致。
 
-本版跟随 Create 固定接口的实际动画，不强制让空闲但仍连接的接口收回。160 项非游戏检查通过不等于以上游戏场景已验收。
+本版跟随 Create 固定接口的实际动画，不强制让空闲但仍连接的接口收回。
 
 ## 储罐专项验收（待执行）
 

@@ -42,11 +42,8 @@ Build with Java 21 / 使用 Java 21 构建：
 ./gradlew.bat build --console=plain
 ```
 
-164 checks across four dependency combinations: 656 passes. These are non-game checks. / 164 项非游戏检查在四组依赖上共通过 656 次。
-
 [文档目录 / Documentation](docs/README.md) · [发布说明 / Release notes](docs/RELEASE-0.7.7-beta.md) · [更新记录 / Changelog](CHANGELOG.md) · [测试与限制 / Testing & limitations](docs/VALIDATION.md) · [GitHub 教程 / GitHub guide](docs/publishing/GITHUB-QUICKSTART.md)
 
 **License: [LGPL-3.0-or-later](LICENSE).** [Third-party notices / 第三方说明](THIRD_PARTY_NOTICES.md).
 
 社区兼容扩展，非 Create 或 Sable 官方项目。 / A community addon, not an official Create or Sable project.
-
