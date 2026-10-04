@@ -46,4 +46,4 @@ RigidSweep 沿最短四元数旋转和线性平移递归精检；包络负责筛
 
 测试覆盖家族回滚故障注入、提交失败、清理异常继续处理；纯平移/转弯中途障碍/初始倾斜/旋转轴相切/沿轴平移/正反路径；已发布依赖上的注入描述符与调用顺序；原生装配奖励入口保留；四语言键和占位符一致性。
 
-依赖矩阵：Sable 2.0.3 + Create 6.0.10 Maven、6.0.10 release、6.0.11，以及 Sable 2.0.5 + Create 6.0.11。最终四组各 155 项，共 620 项检查通过，零失败。四份语言文件各 35 项，解析、键集合及占位符检查通过。构建产物为 build/libs/sable-physical-contraptions-0.7.1-alpha.jar。
+依赖矩阵：Sable 2.0.3 + Create 6.0.10 Maven、6.0.10 release、6.0.11，以及 Sable 2.0.5 + Create 6.0.11。构建产物为 build/libs/sable-physical-contraptions-0.7.1-alpha.jar。
