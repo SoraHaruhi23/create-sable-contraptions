@@ -18,6 +18,28 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /** Checks pinned dependency bytecode without loading Minecraft, Mixins or native physics. */
 class MixinTargetsTest {
+    @Test void coupledCartMembershipDoesNotMakeTheFollowerAMotionOwner() throws Exception {
+        var impulse=compiled("oriented/CartImpulse");
+        var membership=impulse.methods.stream().filter(m->m.name.equals("attachedStructure")).findFirst().orElseThrow();
+        assertTrue(callIndex(membership,"hasContraptionCoupling")>=0);
+        assertTrue(callIndex(membership,"getCoupledCartsIfPresent")>callIndex(membership,"hasContraptionCoupling"));
+        for (var name:List.of("begin","reject")) {
+            var motion=compiled("oriented/CartMotion").methods.stream().filter(m->m.name.equals(name)).findFirst().orElseThrow();
+            assertTrue(callIndex(motion,"structure")>=0);
+            assertEquals(-1,callIndex(motion,"attachedStructure"));
+        }
+        var controller=dependency("com/simibubi/create/content/contraptions/minecart/capability/MinecartController");
+        for (var name:List.of("hasContraptionCoupling","getCouplingLength","getCoupledCart","cart","isPresent"))
+            assertTrue(controller.methods.stream().anyMatch(m->m.name.equals(name)),name);
+    }
+
+    @Test void bothClientAlignmentPathsUseTheSecondaryAttachment() throws Exception {
+        for(var path:List.of("client/CartClientSync","client/CartRenderAlignment")) {
+            var method=compiled(path).methods.stream().filter(m->m.name.equals("tick")||m.name.equals("offset")).findFirst().orElseThrow();
+            assertTrue(callIndex(method,"attachedStructure")>=0);
+            assertTrue(callIndex(method,"anchorOffset")>callIndex(method,"attachedStructure"));
+        }
+    }
     @Test void physicalTanksBypassActorTickCancellationIncludingCreativeTanks() throws Exception {
         String tank="com/simibubi/create/content/fluids/tank/FluidTankBlockEntity";
         var hook=compiled("mixin/PhysicalActorTickerMixin").methods.stream()
@@ -275,8 +297,8 @@ class MixinTargetsTest {
     }
     @Test void minecartSelfCollisionExcludesOnlyItsPhysicalFamily() throws Exception {
         var hook=compiled("mixin/CartSelfCollisionMixin").methods.stream().filter(m->m.name.equals("csc$excludeCarriedBody")).findFirst().orElseThrow();
-        assertTrue(callIndex(hook,"structure")>=0);
-        assertTrue(callIndex(hook,"getContaining")>callIndex(hook,"structure"));
+        assertTrue(callIndex(hook,"attachedStructure")>=0);
+        assertTrue(callIndex(hook,"getContaining")>callIndex(hook,"attachedStructure"));
         assertTrue(callIndex(hook,"related")>callIndex(hook,"getContaining"));
         assertTrue(callIndex(hook,"empty")>callIndex(hook,"related"));
         assertTrue(java.util.Arrays.stream(hook.instructions.toArray()).anyMatch(i->i instanceof org.objectweb.asm.tree.TypeInsnNode t
@@ -367,7 +389,7 @@ class MixinTargetsTest {
     @Test void clientCollisionEntityUsesTheSamePoseAsItsCartModel() throws Exception {
         var client=compiled("client/CartClientSync");
         var tick=client.methods.stream().filter(m->m.name.equals("tick")).findFirst().orElseThrow();
-        assertTrue(callIndex(tick,"structure")>=0);
+        assertTrue(callIndex(tick,"attachedStructure")>=0);
         assertTrue(callIndex(tick,"setPos")>=0 && callIndex(tick,"positionRider")>callIndex(tick,"setPos"));
         var position=client.methods.stream().filter(m->m.name.equals("position")).findFirst().orElseThrow();
         assertTrue(callIndex(position,"renderPose")>=0);
@@ -396,7 +418,7 @@ class MixinTargetsTest {
     }
     @Test void ridingRequiresAPlainCartWithOnlyProxyPassengers() throws Exception {
         var method=compiled("mixin/MinecartRidingMixin").methods.stream().filter(m->m.name.equals("csc$rideAlongsideProxy")).findFirst().orElseThrow();
-        assertTrue(callIndex(method,"structure")>=0);
+        assertTrue(callIndex(method,"attachedStructure")>=0);
         assertTrue(callIndex(method,"isSecondaryUseActive")>=0);
         assertTrue(callIndex(method,"getPassengers")>=0);
         assertTrue(callIndex(method,"startRiding")>=0);

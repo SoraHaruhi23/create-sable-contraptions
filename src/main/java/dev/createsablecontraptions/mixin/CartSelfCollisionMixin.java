@@ -23,7 +23,7 @@ public abstract class CartSelfCollisionMixin {
     private static void csc$excludeCarriedBody(Entity entity,Vector3dc center,Pose3dc pose,BlockState state,
             LevelAccelerator level,BlockPos pos,LevelReusedVectors sink,CallbackInfoReturnable<VoxelShape> cir) {
         if(!(entity instanceof AbstractMinecart cart)) return;
-        var root=CartImpulse.structure(cart); if(root==null)return;
+        var root=CartImpulse.attachedStructure(cart); if(root==null)return;
         var sub=Sable.HELPER.getContaining(cart.level(),pos);
         if(sub!=null && PhysicalFamily.related(root,sub.getUniqueId())) cir.setReturnValue(Shapes.empty());
     }

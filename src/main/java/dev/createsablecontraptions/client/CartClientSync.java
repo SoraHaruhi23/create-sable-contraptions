@@ -20,20 +20,22 @@ public final class CartClientSync {
         var level=Minecraft.getInstance().level;if(level==null)return;
         for(var e:level.entitiesForRendering()) {
             if(!(e instanceof AbstractMinecart cart))continue;
-            var root=CartImpulse.structure(cart);
+            var root=CartImpulse.attachedStructure(cart);
             if(root==null || !(ElevatorActors.sub(root) instanceof ClientSubLevel sub) || sub.isRemoved())continue;
+            var local=CartImpulse.anchorOffset(root,cart);
+            if(local==null)continue;
             var offset=cart.getPassengerRidingPosition(root).subtract(cart.position()).subtract(root.getVehicleAttachmentPoint(cart));
-            var previous=position(sub,0).subtract(offset);
-            var current=position(sub,1).subtract(offset);
+            var previous=position(sub,local,0).subtract(offset);
+            var current=position(sub,local,1).subtract(offset);
             cart.setPos(current);
             cart.xOld=cart.xo=previous.x;cart.yOld=cart.yo=previous.y;cart.zOld=cart.zo=previous.z;
             for(var passenger:cart.getPassengers())cart.positionRider(passenger);
             dev.createsablecontraptions.oriented.OrientedBridge.bounds(root);
         }
     }
-    private static Vec3 position(ClientSubLevel sub,float partialTick) {
+    private static Vec3 position(ClientSubLevel sub,Vec3 local,float partialTick) {
         var anchor=sub.getPlot().getCenterBlock();
-        var p=sub.renderPose(partialTick).transformPosition(new Vector3d(anchor.getX()+.5,anchor.getY()+.5,anchor.getZ()+.5));
+        var p=sub.renderPose(partialTick).transformPosition(new Vector3d(anchor.getX()+.5+local.x,anchor.getY()+.5+local.y,anchor.getZ()+.5+local.z));
         return new Vec3(p.x,p.y-.5,p.z);
     }
 }

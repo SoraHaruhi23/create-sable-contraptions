@@ -1,8 +1,15 @@
 # 更新记录
 
-当前版本：**0.7.6-beta.1**。以下按版本保留当时的名称、修改与验证结论；历史条目中的待验证问题可能已在后续版本处理。当前使用说明见 [README](README.md)，当前验收状态见 [验证与已知限制](docs/VALIDATION.md)。
+当前版本：**0.7.7-beta**。以下按版本保留当时的名称、修改与验证结论；历史条目中的待验证问题可能已在后续版本处理。当前使用说明见 [README](README.md)，当前验收状态见 [验证与已知限制](docs/VALIDATION.md)。
 
-# 0.7.6-beta.1
+# 0.7.7-beta
+
+- 修复同一物理结构的第二辆矿车未参与客户端位置同步的问题，两辆车分别对齐各自的装配锚点。
+- 将结构耦合的第二辆矿车纳入乘坐支持与自身结构碰撞排除，主车仍独立负责驱动结构。
+- Fix client alignment of the second minecart supporting a shared physical contraption, using a separate assembly anchor for each cart.
+- Include the second supporting cart in riding support and self-collision exclusion; retain a single motion owner.
+
+# 0.7.6-beta
 
 - 根据用户当前测试反馈及明确授权进入首个 beta；保留数字版本与 0.7.6-alpha 的运行逻辑，只切换发布阶段。
 - 保留 Create: Sable Contraptions / create_sable_contraptions 新名称及新数据格式，不恢复旧名称迁移读取。

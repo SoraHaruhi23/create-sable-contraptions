@@ -13,7 +13,7 @@ public abstract class MinecartRidingMixin {
     @Inject(method = "interact", at = @At("HEAD"), cancellable = true)
     private void csc$rideAlongsideProxy(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         var cart = (Minecart)(Object)this;
-        if (player.isSecondaryUseActive() || dev.createsablecontraptions.oriented.CartImpulse.structure(cart) == null) return;
+        if (player.isSecondaryUseActive() || dev.createsablecontraptions.oriented.CartImpulse.attachedStructure(cart) == null) return;
         // Native Minecart rejects every occupied cart, even when its sole occupant is our invisible carrier.
         if (cart.getPassengers().stream().anyMatch(p -> !(p instanceof com.simibubi.create.content.contraptions.AbstractContraptionEntity))) return;
         if (cart.level().isClientSide) cir.setReturnValue(InteractionResult.SUCCESS);
