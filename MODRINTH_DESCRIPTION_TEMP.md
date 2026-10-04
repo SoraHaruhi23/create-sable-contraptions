@@ -26,7 +26,7 @@
 
 ## 当前版本与状态
 
-当前开发版本：**0.7.6-beta.1**。
+当前开发版本：**0.7.6-beta**。
 
 160 项非游戏检查在四组依赖组合上通过，共 640 次。已有部分用户实机反馈，但尚未完成最新版系统性游戏内回归。轴承、滑轮、活塞、龙门、矿车、钻掘、多人同步及保存重载等行为可能存在问题；大型结构的性能和部分嵌套/第三方结构交互也未完全验证。请备份存档，并在测试环境中使用。
 
@@ -68,7 +68,7 @@ Each dependency must also meet its own loader and version requirements. See the 
 
 ## Version and testing status
 
-Current development version: **0.7.6-beta.1**.
+Current development version: **0.7.6-beta**.
 
 The same 160 non-game checks pass across four dependency combinations (640 executions). There is user feedback on individual fixes, but systematic in-game regression testing of the latest version is not complete. Bearings, pulleys, pistons, gantries, minecarts, drilling, multiplayer synchronization, and save/reload behavior may still have issues. Large-structure performance and some nested or third-party structure interactions are also not fully verified. Back up your worlds and test in a separate instance.
 

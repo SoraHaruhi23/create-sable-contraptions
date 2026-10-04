@@ -2,7 +2,7 @@
 
 将 Create（机械动力）的动态结构接入 Sable 物理子世界，继续使用 Create 的控制器与移动工作行为。
 
-**当前版本：0.7.6-beta.1。** 首个 Beta，作者反馈当前测试未发现问题并同意进入 beta；仍不代表全部场景验证完成。普通 Create 列车不进入物理化范围。
+**当前版本：0.7.6-beta。** 首个 Beta，作者反馈当前测试未发现问题并同意进入 beta；仍不代表全部场景验证完成。普通 Create 列车不进入物理化范围。
 
 中文名：**机械动力：物理动态结构**。Mod ID 为 `create_sable_contraptions`。自 0.7.4-alpha 起不再读取旧名称数据或自动迁移旧配置；请使用已由 0.7.3-alpha 转换并保存的存档和矿车物品，或新存档。尚未转换的数据应先使用 [0.7.3 迁移版](docs/MIGRATION-0.7.3.md)。本版已由作者明确批准进入 beta，仍继续收集测试反馈。
 
@@ -29,7 +29,7 @@
 
 ## 安装与兼容
 
-需要 Java 21、Minecraft 1.21.1 和 NeoForge。将 `create-sable-contraptions-0.7.6-beta.1.jar` 放入实例的 `mods` 目录，移除本 Mod 旧版；不要安装 `-sources.jar`。多人使用时客户端和服务端均需安装，并保持本 Mod 版本一致。首次尝试请使用存档副本。
+需要 Java 21、Minecraft 1.21.1 和 NeoForge。将 `create-sable-contraptions-0.7.6-beta.jar` 放入实例的 `mods` 目录，移除本 Mod 旧版；不要安装 `-sources.jar`。多人使用时客户端和服务端均需安装，并保持本 Mod 版本一致。首次尝试请使用存档副本。
 
 | 依赖 | 加载声明 | 本地验证范围 |
 | --- | --- | --- |
@@ -103,7 +103,7 @@ Java 21 环境下：
 
 ## 项目文档与来源
 
-- [首个 Beta 发布说明](docs/RELEASE-0.7.6-beta.1.md) · [新建 GitHub 仓库教程](docs/GITHUB-QUICKSTART.md) · [发布前检查](docs/REVIEW-0.7.6-beta.1.md)。
+- [首个 Beta 发布说明](docs/RELEASE-0.7.6-beta.md) · [新建 GitHub 仓库教程](docs/GITHUB-QUICKSTART.md) · [发布前检查](docs/REVIEW-0.7.6-beta.md)。
 - [更新记录](CHANGELOG.md)：按版本保留历史变更。
 - [验证与已知限制](docs/VALIDATION.md)：回归清单、测试边界、问题反馈信息。
 - [仓库与发布准备](docs/PUBLISHING.md)：GitHub 仓库、发布附件和许可证说明。

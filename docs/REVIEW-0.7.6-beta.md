@@ -1,6 +1,6 @@
 # 首个 Beta 发布前检查
 
-日期：2026-10-03。版本：0.7.6-beta.1。用户同意由 alpha 进入 beta；本轮不启动 Minecraft、独立服务器、GameTest 或桌面控制，也不创建远程仓库。
+日期：2026-10-03。版本：0.7.6-beta。用户同意由 alpha 进入 beta；本轮不启动 Minecraft、独立服务器、GameTest 或桌面控制，也不创建远程仓库。
 
 ## 代码复核
 

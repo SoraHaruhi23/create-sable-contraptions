@@ -1,4 +1,4 @@
-# Create: Sable Contraptions 0.7.6-beta.1
+# Create: Sable Contraptions 0.7.6-beta
 
 首个 Beta，适用于 Minecraft 1.21.1 / NeoForge。中文名：机械动力：物理动态结构。
 
@@ -17,7 +17,7 @@
 
 需要 Java 21、Minecraft 1.21.1、NeoForge 21.1.228+、Create 6.0.10+、Sable 2.0.3+，以及各依赖自身要求的组件。未来版本允许加载不等于已验证。
 
-安装 `create-sable-contraptions-0.7.6-beta.1.jar`，移除本 Mod 旧 JAR。多人客户端与服务端保持相同版本。`-sources.jar` 和 `-source.zip` 是开发源码，不能放入 mods。
+安装 `create-sable-contraptions-0.7.6-beta.jar`，移除本 Mod 旧 JAR。多人客户端与服务端保持相同版本。`-sources.jar` 和 `-source.zip` 是开发源码，不能放入 mods。
 
 0.7.4～0.7.6-alpha 的新格式数据可直接继续使用，无新增迁移。旧 ID `sable_physical_contraptions` 的存档及矿车物品必须先通过 0.7.3-alpha 转换并保存；本版没有旧格式读取或旧配置复制。仅进入一次世界无法转换未加载实体及尚未放置的矿车物品。升级前保留完整存档备份。
 

@@ -1,15 +1,15 @@
 # GitHub 仓库与发布准备
 
-当前版本：0.7.6-beta.1。此文是操作建议，不表示仓库或 Release 已创建。
+当前版本：0.7.6-beta。此文是操作建议，不表示仓库或 Release 已创建。
 
-完整操作步骤见 [新建仓库教程](GITHUB-QUICKSTART.md)，可直接粘贴的正文见 [Beta 发布说明](RELEASE-0.7.6-beta.1.md)。发布附件集中在 `build/releases/0.7.6-beta.1/`。
+完整操作步骤见 [新建仓库教程](GITHUB-QUICKSTART.md)，可直接粘贴的正文见 [Beta 发布说明](RELEASE-0.7.6-beta.md)。发布附件集中在 `build/releases/0.7.6-beta/`。
 
 ## 建议顺序
 
 1. 创建名为 `create-sable-contraptions` 的 GitHub repository，先决定公开还是私有。若尚未决定源码公开方式，可先设为 Private。
 2. 使用现有源码、README 和 .gitignore 建立本地 Git 历史并推送。GitHub 建仓时不再生成 README、.gitignore 或 LICENSE，以免与本地文件冲突；使用本地已选定的 LGPL-3.0-or-later 文件。
 3. 用仓库保存源码与文档，用 Issues 收集问题。没有必要等到 beta 才建立仓库。
-4. 准备提供下载时，为准确的源码提交创建 `v0.7.6-beta.1` 标签及 GitHub Release，勾选 **This is a pre-release**，附上模组 JAR 和本版说明。也可先保存为 Draft。
+4. 准备提供下载时，为准确的源码提交创建 `v0.7.6-beta` 标签及 GitHub Release，勾选 **This is a pre-release**，附上模组 JAR 和本版说明。也可先保存为 Draft。
 5. 作者已同意进入首个 beta。以后发布到 Modrinth/CurseForge 时，可将该仓库作为源码和问题反馈地址。
 
 公开仓库、发布下载和进入 beta 是不同决定。本次没有执行 Git 初始化、推送、建仓或发布。
@@ -20,7 +20,7 @@
 
 不要把整个工作目录拖进网页上传：网页操作不能代替本地 Git 对忽略规则和暂存文件的核对。推送前检查实际暂存文件；上游参考仓库、依赖缓存、游戏存档、日志和本地工具不应作为项目源码提交。
 
-可供玩家下载的附件：`build/libs/create-sable-contraptions-0.7.6-beta.1.jar`。不要将其提交到源码目录；放入 Release 附件。`-sources.jar` 是源码包，GitHub 自动生成的 Source code ZIP 也不是可安装模组。
+可供玩家下载的附件：`build/libs/create-sable-contraptions-0.7.6-beta.jar`。不要将其提交到源码目录；放入 Release 附件。`-sources.jar` 是源码包，GitHub 自动生成的 Source code ZIP 也不是可安装模组。
 
 ## 当前发布说明要点
 

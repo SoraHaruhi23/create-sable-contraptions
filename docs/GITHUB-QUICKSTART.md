@@ -1,6 +1,6 @@
 # 首次建立 GitHub 仓库与发布 Beta
 
-适用于本项目 0.7.6-beta.1，2026-10-03 核对 GitHub 官方文档。本次仅提供教程，没有替你初始化 Git、创建仓库、推送或发布。
+适用于本项目 0.7.6-beta，2026-10-03 核对 GitHub 官方文档。本次仅提供教程，没有替你初始化 Git、创建仓库、推送或发布。
 
 ## 1. 在网页创建空仓库
 
@@ -34,7 +34,7 @@ git diff --cached --name-only
 确认内容正确后执行：
 
 ```powershell
-git commit -m 'Release 0.7.6-beta.1'
+git commit -m 'Release 0.7.6-beta'
 git remote add origin https://github.com/YOUR_USERNAME/create-sable-contraptions.git
 git remote -v
 git push -u origin main
@@ -48,18 +48,18 @@ git push -u origin main
 
 ```powershell
 git status --short
-git tag -a v0.7.6-beta.1 -m 'First beta release'
-git push origin v0.7.6-beta.1
+git tag -a v0.7.6-beta -m 'First beta release'
+git push origin v0.7.6-beta
 ```
 
 先确认工作区没有遗漏的发布修改；标签应指向构建该 JAR 的源码提交。
 
 在仓库网页打开 **Releases → Draft a new release**：
 
-1. Tag 选择 `v0.7.6-beta.1`。
-2. Title 填 `Create: Sable Contraptions 0.7.6-beta.1`。
-3. 正文粘贴 [发布说明](RELEASE-0.7.6-beta.1.md)。
-4. 上传 `build/releases/0.7.6-beta.1/` 中的安装 JAR、sources JAR、完整 source ZIP 和 SHA256SUMS.txt；也可附发布说明文件。
+1. Tag 选择 `v0.7.6-beta`。
+2. Title 填 `Create: Sable Contraptions 0.7.6-beta`。
+3. 正文粘贴 [发布说明](RELEASE-0.7.6-beta.md)。
+4. 上传 `build/releases/0.7.6-beta/` 中的安装 JAR、sources JAR、完整 source ZIP 和 SHA256SUMS.txt；也可附发布说明文件。
 5. 勾选 **This is a pre-release**，核对后选择 **Publish release**，尚未准备公开可保存 Draft。
 
 玩家下载普通 `.jar`。完整 `-source.zip` 包含构建脚本与测试，`-sources.jar` 便于开发工具查看源码。GitHub 也会为标签提供源码归档。JAR 作为 Release 附件上传，不提交到 Git 源码目录。参见 [GitHub：管理 Release](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository)。
