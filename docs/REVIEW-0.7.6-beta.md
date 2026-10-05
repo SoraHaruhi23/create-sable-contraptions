@@ -23,7 +23,7 @@
 - 依赖矩阵：Sable 2.0.3 + Create 6.0.10-280、6.0.10 正式包、6.0.11-300；Sable 2.0.5 + Create 6.0.11-300。
 - 检查 JAR 元数据版本、Mod ID、LGPL 标识，以及 43 个公共 Mixin 和 17 个客户端 Mixin 对应类存在。
 - 二进制 JAR 的 153 个 class 与 0.7.6-alpha 逐一 SHA-256 比较一致。本次仅更改版本阶段和文档，未悄然引入未测试的运行改动。
-- 安装包包含 LICENSE、COPYING、COPYING.LESSER、THIRD_PARTY_NOTICES.md，内容与源码根目录一致；无旧迁移类，无内嵌 Create/Sable 实现。
+- 安装包包含 LICENSE、NOTICE.md、licenses/GPL-3.0.txt、THIRD_PARTY_NOTICES.md，内容与源码根目录一致；无旧迁移类，无内嵌 Create/Sable 实现。
 - 发布目录包括安装 JAR、sources JAR、含构建脚本/测试/文档的完整源码 ZIP、发布说明及 SHA-256 清单。源码按明确文件列表打包，排除缓存、参考仓库、旧构建和运行目录。
 
 Gradle 提示部分功能在 Gradle 9 将弃用；项目固定使用 Wrapper 8.14.3，本次构建未因此失败。未验证无缓存联网环境从零下载依赖。

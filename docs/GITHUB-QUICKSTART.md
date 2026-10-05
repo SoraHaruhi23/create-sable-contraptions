@@ -6,9 +6,9 @@
 
 登录 GitHub，右上角 **+ → New repository**，或打开 https://github.com/new 。
 
-- Owner：你的账户。
 - Repository name：`create-sable-contraptions`。
 - Description：`Create contraptions powered by Sable physics for Minecraft 1.21.1 NeoForge.`
+- Owner：你的账户。
 - Visibility：打算公开源码和收集反馈时选择 **Public**。
 - **不要勾选 Add a README file；.gitignore 和 License 都选 None。** 本地已有这些文件，包括 LGPL-3.0-or-later 授权与完整条款。
 
@@ -22,19 +22,19 @@
 Set-Location 'E:\codex\sable physical contraptions'
 git init -b main
 git config user.name '你的提交署名'
-git config user.email '你的提交邮箱或 GitHub 提供的 noreply 邮箱'
 git add .
+git config user.email '你的提交邮箱或 GitHub 提供的 noreply 邮箱'
 git status --short
 git diff --cached --stat
 git diff --cached --name-only
 ```
 
-这些配置只作用于本仓库；将占位文字替换为自己的信息。提交前核对：包含 `src`、`gradle`、构建脚本、文档、LICENSE、COPYING、COPYING.LESSER、THIRD_PARTY_NOTICES.md；不应包含 `.reference`、`.tools`、`.gradle-user-home`、`build`、游戏存档或日志。现有 `.gitignore` 已排除这些本地目录。不要强制添加被忽略的缓存和构建产物。
+这些配置只作用于本仓库；将占位文字替换为自己的信息。提交前核对：包含 `src`、`gradle`、构建脚本、文档、LICENSE、NOTICE.md、licenses/GPL-3.0.txt、THIRD_PARTY_NOTICES.md；不应包含 `.reference`、`.tools`、`.gradle-user-home`、`build`、游戏存档或日志。现有 `.gitignore` 已排除这些本地目录。不要强制添加被忽略的缓存和构建产物。
 
 确认内容正确后执行：
 
 ```powershell
-git commit -m 'Release 0.7.6-beta'
+git commit -m 'Update'
 git remote add origin https://github.com/YOUR_USERNAME/create-sable-contraptions.git
 git remote -v
 git push -u origin main
