@@ -1,6 +1,6 @@
 # 首次建立 GitHub 仓库与发布 Beta
 
-适用于本项目 0.7.6-beta，2026-10-03 核对 GitHub 官方文档。本次仅提供教程，没有替你初始化 Git、创建仓库、推送或发布。
+适用于本项目 0.7.6-beta，2026-10-03 核对 GitHub 官方文档。
 
 ## 1. 在网页创建空仓库
 
@@ -48,7 +48,7 @@ git push -u origin main
 
 ```powershell
 git status --short
-git tag -a v0.7.6-beta -m 'First beta release'
+git tag -a v0.7.6-beta -m 'Release 0.7.6-beta'
 git push origin v0.7.6-beta
 ```
 
@@ -58,7 +58,7 @@ git push origin v0.7.6-beta
 
 1. Tag 选择 `v0.7.6-beta`。
 2. Title 填 `Create: Sable Contraptions 0.7.6-beta`。
-3. 正文粘贴 [发布说明](RELEASE-0.7.6-beta.md)。
+3. 正文粘贴 [发布说明](../RELEASE-0.7.6-beta.md)。
 4. 上传 `build/releases/0.7.6-beta/` 中的安装 JAR、sources JAR、完整 source ZIP 和 SHA256SUMS.txt；也可附发布说明文件。
 5. 勾选 **This is a pre-release**，核对后选择 **Publish release**，尚未准备公开可保存 Draft。
 

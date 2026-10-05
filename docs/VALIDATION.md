@@ -1,6 +1,11 @@
 # 验证与已知限制
 
-适用版本：0.7.6-beta。整理日期：2026-10-03。
+适用版本：0.7.6-beta。整理日期：2026-10-04。
+
+## Coupled-cart fix / 0.7.6-beta 双矿车修复
+
+- In-game validation pending: alignment on straight tracks, in reverse and on curves; boarding either cart; save/reload; ordinary chain couplings.
+- 游戏内待验证：两辆矿车直线、反向及弯道对齐，分别上下车，保存重载，以及普通链式耦合不受影响。
 
 ## 用户验收反馈
 
