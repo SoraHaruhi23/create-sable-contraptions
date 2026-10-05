@@ -4,10 +4,10 @@
 
 # 0.7.7-beta
 
-- 修复同一物理结构的第二辆矿车未参与客户端位置同步的问题，两辆车分别对齐各自的装配锚点。
-- 将结构耦合的第二辆矿车纳入乘坐支持与自身结构碰撞排除，主车仍独立负责驱动结构。
 - Fix client alignment of the second minecart supporting a shared physical contraption, using a separate assembly anchor for each cart.
 - Include the second supporting cart in riding support and self-collision exclusion; retain a single motion owner.
+- 修复同一物理结构的第二辆矿车未参与客户端位置同步的问题，两辆车分别对齐各自的装配锚点。
+- 将结构耦合的第二辆矿车纳入乘坐支持与自身结构碰撞排除，主车仍独立负责驱动结构。
 
 # 0.7.6-beta
 

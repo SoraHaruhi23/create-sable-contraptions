@@ -77,6 +77,6 @@ processResources {
 // Distribute the grant and complete terms with both binary and source archives.
 tasks.withType(Jar).configureEach {
     from(rootProject.projectDir) {
-        include 'LICENSE', 'COPYING', 'COPYING.LESSER', 'THIRD_PARTY_NOTICES.md'
+        include 'LICENSE', 'NOTICE.md', 'licenses/GPL-3.0.txt', 'THIRD_PARTY_NOTICES.md'
     }
 }

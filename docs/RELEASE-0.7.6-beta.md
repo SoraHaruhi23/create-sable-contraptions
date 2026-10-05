@@ -1,19 +1,5 @@
 # Create: Sable Contraptions 0.7.6-beta
 
-## 中文
-
-首个 Beta。
-
-- 支持电梯、轴承、滑轮、动力活塞、龙门、矿车及稳定子结构的物理化。
-- 包含碰撞停转、真实库存与流体访问、接口对接、护目镜提示和四语言配置界面。
-- 包含储罐更新和接口两端伸缩动画修复；普通列车不转换。
-
-**环境：** Minecraft 1.21.1、Java 21、NeoForge 21.1.228+、Create 6.0.10+、Sable 2.0.3+。
-
-请备份存档。
-
-反馈请附版本、复现步骤和日志。
-
 ## English
 
 First Beta.
@@ -27,6 +13,20 @@ First Beta.
 Please back up worlds first.
 
 Include versions, reproduction steps, and logs in reports.
+
+## 中文
+
+首个 Beta。
+
+- 支持电梯、轴承、滑轮、动力活塞、龙门、矿车及稳定子结构的物理化。
+- 包含碰撞停转、真实库存与流体访问、接口对接、护目镜提示和四语言配置界面。
+- 包含储罐更新和接口两端伸缩动画修复；普通列车不转换。
+
+**环境：** Minecraft 1.21.1、Java 21、NeoForge 21.1.228+、Create 6.0.10+、Sable 2.0.3+。
+
+请备份存档。
+
+反馈请附版本、复现步骤和日志。
 
 ---
 
