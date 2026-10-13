@@ -1,92 +1,39 @@
-# 验证与已知限制
+# Testing & limitations / 测试与限制
 
-适用版本：0.8.0-beta。整理日期：2026-10-13。
+## English
 
-## Nested elevator regression / 嵌套电梯回归
+### Current limitations
 
-- [ ] Reject outer assembly with an active inner controller, preserving blocks and showing an order hint. / 内层已装配时，外层装配应被阻止，保留方块并提示先外后内。
-- [ ] Reject wrench pickup of a cart carrying independently assembled inner mechanisms; retry after inner disassembly. / 矿车承载独立装配的内层机构时，扳手打包应被阻止；先拆卸内层后重试。
-- [ ] Run inner and outer elevators separately and together, then reverse; ropes and collision outlines follow their actual blocks. / 分别及同时运行内外电梯，再反转，检查绳索与碰撞高亮。
-- [ ] Add/remove extra contacts and controls; only the original column contact is required. / 增删额外接触器与控制器，只要求原始定位接触器保持正确。
-- [ ] Carry the inner elevator toward a ceiling; the outer elevator must stop. Save/reload and disassemble inner before outer. / 内层随外层接近天花板，外层应停转；检查保存重载，按先内后外顺序拆卸。
+- Only unscaled Sable parents are supported. Assemble outer mechanisms first and disassemble inner mechanisms first; minecarts with independently assembled inner mechanisms cannot be packed.
+- Collision prediction uses other bodies' current poses. High-speed relative motion needs further validation; detection budgets may stop very large structures.
+- Third-party inventories, optional integrations and special advancements need separate verification. Recovery is not atomic across files or process crashes.
 
-## Sublevel assembly / 父物理结构装配
+### Regression checklist
 
-- [ ] Stationary/moving/rotating parent: assemble, operate, stop, reverse and disassemble bearings and linear mechanisms. / 静止、移动、旋转的父结构：轴承和直线机构装配、运行、停转、反向及拆卸。
-- [ ] Save/reload; check parent association, inventories, fluids and rider positions. / 保存重载后检查父结构关联、库存、流体及乘员位置。
-- [ ] Minecart item placement on parent rails and in the ordinary world; assembler entry/exit. / 矿车物品在父结构轨道和普通世界放置，驶入、驶出装配站。
-- [ ] Both render backends, two clients, drill collisions and same-parent portable interfaces. / 普通与 Flywheel 渲染、双客户端、钻头碰撞及同父结构便携式接口。
+- [ ] Assemble, run, reverse, stop/resume, return and disassemble each supported mechanism.
+- [ ] Check minecart curves, slopes, coupled carts, riding, assembler access, pickup and placement; drills must protect assembly sources.
+- [ ] Run nested mechanisms on stationary, moving and rotating parents; check ropes, contacts, collision stopping and disassembly order.
+- [ ] Check drills, deployers, redstone contacts, automatic doors and portable-interface docking/animations.
+- [ ] Preserve items and fluids through bucket/interface transfers, assembly, pickup, save/reload and server restart.
+- [ ] Check multiple clients, reconnects, normal/Flywheel rendering, goggles, configuration and UI languages; verify ordinary Create trains.
 
-Unscaled parents only. Parent removal, high-speed parent movement and cross-sublevel docking need separate validation; collision prediction uses the parent's current pose.
-仅支持未缩放父结构。父结构移除、高速父结构运动及跨 sublevel 接口对接需另行验证；碰撞预测使用父结构当前姿态。
+Report exact mod/dependency versions, reproduction steps, expected and actual results, and relevant logs. For stops, include `/csc cart_status` or `/csc bearing_status` output when available. Test upgrades in a world copy.
 
-## Coupled-cart fix / 0.7.7-beta 双矿车修复
+## 中文
 
-- In-game validation pending: alignment on straight tracks, in reverse and on curves; boarding either cart; save/reload; ordinary chain couplings.
-- 游戏内待验证：两辆矿车直线、反向及弯道对齐，分别上下车，保存重载，以及普通链式耦合不受影响。
+### 当前限制
 
-## 用户验收反馈
+- 仅支持未缩放的 Sable 父结构。装配先外层，拆卸先内层；存在独立装配内层机构的矿车不能打包。
+- 碰撞预测使用其他物理体的当前姿态，高速相对运动仍需验证；大型结构可能因检测预算不足停转。
+- 第三方库存、可选集成及特殊进度需单独验证；恢复不保证跨文件或进程崩溃时的原子性。
 
-2026-10-03，用户表示“我觉得没什么问题了”，明确要求构建首个 beta。记录为用户总体反馈及进入 beta 的决定；未收到每项测试的独立记录，因此不把下列多人、性能及所有组合自动勾选为通过。开发侧仍未运行游戏。
+### 回归清单
 
-## 已有证据
+- [ ] 各类机构装配、运行、反转、停止恢复、归位及拆卸。
+- [ ] 矿车弯道、坡道、耦合、乘坐、装配站进出、收起放置；钻头保护装配源头。
+- [ ] 在静止、移动及旋转父结构上运行嵌套机构，检查绳索、接触器、碰撞停转和拆卸顺序。
+- [ ] 钻头、机械手、红石接触器、自动门及便携式接口停靠与动画。
+- [ ] 桶和接口传输、装拆、矿车收起、保存重载及服务器重启后，物品和流体守恒。
+- [ ] 多人观察与重连、普通及 Flywheel 渲染、护目镜、配置和界面语言；普通 Create 列车回归。
 
-- 覆盖几何、辅助数据逻辑、恢复事务故障注入和已发布依赖的字节码契约。回滚故障注入测试不运行真实方块实体加载。
-- 用户在此前版本反馈确认：电梯动态结构控制器修复、矿车碰撞高度修复、移动缓慢解决、放置卡顿解决。它们属于具体场景反馈，未自动外推到所有结构或最新版。
-- 开发侧未启动游戏、服务器或 GameTest。最近的转弯扫掠、家族恢复保护及装配源头破坏保护只有代码和非游戏验证。
-
-## 本版接口动画验收（待执行）
-
-- [ ] 流体接口停止传输后，机构仍停在对接位置时，两端保持相符的伸出状态。
-- [ ] 实际传输、重新传输、机构离开、红石停用及目标拆除时，观察两端伸缩；同时检查普通与 Flywheel 渲染。
-- [ ] 物品接口重复上述检查；多人观察时两端动画一致。
-
-本版跟随 Create 固定接口的实际动画，不强制让空闲但仍连接的接口收回。
-
-## 储罐专项验收（待执行）
-
-在存档副本中测试单方块和多方块储罐，记录实际可取出的量，而不只看液面或探测模组显示：
-
-- [ ] 装配前存入确定数量流体，装配后核对真实储罐、便携式流体接口查询和可抽出量。
-- [ ] 装配后用桶加液/取液，等待同步后核对液面，再通过接口抽出，确认总量守恒。
-- [ ] 接口输入/输出后再用桶取液，确认双方访问同一库存；拆分、扩建多方块储罐后重新对接。
-- [ ] 保存重进、拆卸、矿车收起再放置，核对流体种类和数量；多人时核对另一客户端液面。
-
-0.7.5 修复已确认的真实储罐 tick 被取消问题。代码检查不能证明用户现场流体是否已经丢失；本版不以旧快照覆盖当前库存，已有数据损失仍需从备份处理。以上项目尚未标记通过。
-
-## 详细回归清单（未提供逐项记录）
-
-- [ ] 转换后兼容性：使用 0.7.3 转换并保存的数据，在 0.7.4 中核对机构、子结构、矿车物品、库存/流体及配置；本版不再自动迁移旧格式。
-
-以下未勾选项表示缺少系统验收记录，不等于已知必然失败。建议记录确切 Mod/依赖版本、场景、结果与日志。
-
-- [ ] 各类机构：装配、正反运行、停止/恢复、归位、拆卸，包含时钟双指针。
-- [ ] 矿车：直线、弯道、坡道、反向、高速阻挡、装配站装拆、乘坐和敲击起步；确认钻头不破坏装配站。
-- [ ] 子结构：跟随、嵌套、碰撞让主结构停止、解除后恢复；耦合矿车另测。
-- [ ] 工作部件：钻头目标/掉落、机械手工具归还、红石接触、自动门、接口快速减速/传输/加速。
-- [ ] 数据：带物品及流体的结构反复装拆、收起放置、保存重进、跨区块加载及服务器重启，不丢失、不复制、不残留无法清理的结构。
-- [ ] 多人：至少两人观察、乘坐、选层和编辑；中途加入、断线重连后的姿态、库存、HUD 一致。
-- [ ] 普通列车：行驶、车站、装拆及现有工作部件行为回归。
-- [ ] 持续运行：多结构反复装拆后，无持续增长的实体、物理体和加载票据；预算不足时明确提示，记录服务器耗时。
-- [ ] 客户端：四种语言、Mods 配置入口、HUD 原因与高亮开关；关闭开发诊断后提示仍可用。
-
-Beta 的优先门槛是正常流程的数据完整性、可恢复的运动/碰撞以及多人基本一致性。尚未测试的第三方组件、特殊进度和极端场景应明确列为边界。进入 beta 和主版本变更须由作者明确决定；不因完成文档或检查通过而自动更名。
-
-## 尚存边界
-
-1. 跨文件保存/进程崩溃不是原子事务；第三方清理失败可能留下资源，物品恢复失败还可能留下 Create 提前创建的空矿车。
-2. 其他运动物理体按当前姿态检测；高速相向运动、复杂耦合和多层稳定子结构需实机验证。
-3. 大结构有碰撞查询/细分预算，超出会停转。没有 FPS/TPS 提升百分比或长期性能结论。
-4. 非标准或仅有方向的库存能力可能不进入移动行为公共库存；不能保证任意第三方多方块机器兼容。
-5. 爆炸、命令和第三方直接移除元件时，行为临时持有物品的回收并非全部覆盖。
-6. Simulated 可选保护缺少实际二进制组合验证；更高依赖版本没有自动兼容保证。
-7. 未全量验证进度授予；开发诊断正文仍为中文。
-
-## 反馈问题时请提供
-
-- 本 Mod、Minecraft、NeoForge、Create、Sable 的准确版本；单人或独立服务器。
-- 机构类型、朝向、转速/速度、子结构或耦合情况，以及复现步骤和预期结果。
-- 相关时间段的 `latest.log`，崩溃时附 crash report；停转问题可附 `/csc cart_status` 或 `/csc bearing_status` 输出。
-- 截图/短视频；数据问题注明是否经过收起放置、拆卸、重载或重启，及物品变化。
-
-上传日志前可去掉服务器地址、聊天等无关个人信息。请勿把尚未复现或未执行的项目记录为通过。
+反馈请附准确版本、复现步骤、预期与实际结果及相关日志。停转问题可附 `/csc cart_status` 或 `/csc bearing_status` 输出。升级测试请使用存档副本。

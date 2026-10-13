@@ -44,7 +44,7 @@ Build with Java 21 / 使用 Java 21 构建：
 ./gradlew.bat build --console=plain
 ```
 
-[Documentation / 文档目录](docs/README.md) · [Release notes / 发布说明](docs/RELEASE-0.8.0-beta.md) · [Changelog / 更新记录](CHANGELOG.md) · [Testing & limitations / 测试与限制](docs/VALIDATION.md) · [GitHub guide / GitHub 教程](docs/publishing/GITHUB-QUICKSTART.md)
+[Releases / 下载](https://github.com/SoraHaruhi23/create-sable-contraptions/releases) · [Release notes / 发布说明](docs/RELEASE-0.8.0-beta.md) · [Changelog / 更新记录](CHANGELOG.md) · [Testing & limitations / 测试与限制](docs/VALIDATION.md) · [Issues / 问题反馈](https://github.com/SoraHaruhi23/create-sable-contraptions/issues)
 
 **License: [LGPL-3.0-or-later](LICENSE).** [Copyright / 版权声明](NOTICE.md) · [Third-party notices / 第三方说明](THIRD_PARTY_NOTICES.md).
 
