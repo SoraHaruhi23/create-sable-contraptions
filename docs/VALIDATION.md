@@ -10,6 +10,7 @@
 
 ### Regression checklist
 
+- [ ] With Steam 'n' Rails installed, change sliding-door modes after assembly, including while stopped at a floor; check manual/automatic operation and save/reload.
 - [ ] Assemble, run, reverse, stop/resume, return and disassemble each supported mechanism.
 - [ ] Check minecart curves, slopes, coupled carts, riding, assembler access, pickup and placement; drills must protect assembly sources.
 - [ ] Run nested mechanisms on stationary, moving and rotating parents; check ropes, contacts, collision stopping and disassembly order.
@@ -29,6 +30,7 @@ Report exact mod/dependency versions, reproduction steps, expected and actual re
 
 ### 回归清单
 
+- [ ] 安装汽鸣铁道后，在装配状态下切换门模式（包括停在楼层时），检查手动／自动开门及保存重载。
 - [ ] 各类机构装配、运行、反转、停止恢复、归位及拆卸。
 - [ ] 矿车弯道、坡道、耦合、乘坐、装配站进出、收起放置；钻头保护装配源头。
 - [ ] 在静止、移动及旋转父结构上运行嵌套机构，检查绳索、接触器、碰撞停转和拆卸顺序。

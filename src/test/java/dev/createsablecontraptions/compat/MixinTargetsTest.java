@@ -18,6 +18,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /** Checks pinned dependency bytecode without loading Minecraft, Mixins or native physics. */
 class MixinTargetsTest {
+    @Test void physicalDoorSettingsRefreshBeforeActorCheckpoint() throws Exception {
+        var actors = compiled("elevator/ElevatorActors");
+        var prepare = actors.methods.stream().filter(m -> m.name.equals("prepare")).findFirst().orElseThrow();
+        assertTrue(callIndex(prepare,"refreshDoorSettings") >= 0);
+        assertTrue(callIndex(prepare,"refreshDoorSettings") < callIndex(prepare,"checkpoint"));
+        var refresh = actors.methods.stream().filter(m -> m.name.equals("refreshDoorSettings")).findFirst().orElseThrow();
+        assertTrue(callIndex(refresh,"saveWithFullMetadata") >= 0);
+        assertTrue(java.util.Arrays.stream(refresh.instructions.toArray()).anyMatch(i ->
+                i instanceof FieldInsnNode f && f.getOpcode() == org.objectweb.asm.Opcodes.PUTFIELD
+                        && f.name.equals("blockEntityData")));
+        assertTrue(callIndex(refresh,"setLeft") >= 0);
+        assertTrue(callIndex(refresh,"getBlocks") >= 0);
+        assertTrue(java.util.Arrays.stream(refresh.instructions.toArray()).anyMatch(i ->
+                i instanceof org.objectweb.asm.tree.LdcInsnNode c && "Open".equals(c.cst)));
+    }
     @Test void activeControllersAreRejectedBeforeBlockTransfer() throws Exception {
         var method=compiled("mixin/ContraptionMixin").methods.stream()
                 .filter(m -> m.name.equals("csc$assemble")).findFirst().orElseThrow();

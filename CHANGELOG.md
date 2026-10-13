@@ -4,6 +4,7 @@
 
 ### 0.8.0-beta
 
+- Synchronize live sliding-door settings with movement behaviours after wrench mode changes.
 - Support assembly on unscaled Sable parent structures, including parent motion, save/reload and disassembly back into the parent.
 - Adapt collisions, minecart alignment and portable interfaces; fix nested elevator ropes, contacts, carried collisions and Flywheel rendering.
 - Protect active inner controllers and nested minecart pickup; validate parent links and fluid tank indices.
@@ -23,6 +24,7 @@
 
 ### 0.8.0-beta
 
+- 同步滑动门扳手修改后的实时设置，避免动态结构行为沿用旧模式。
 - 支持在未缩放的 Sable 父结构上装配，跟随父结构运动，保存重载后保留关联，并拆卸回父结构。
 - 适配碰撞、矿车对齐及便携式接口；修复嵌套电梯绳索、接触器、随动碰撞和 Flywheel 渲染。
 - 保护已装配内层控制器和嵌套矿车打包，校验父结构关联及储罐索引。

@@ -57,8 +57,30 @@ public final class ElevatorActors {
         // Derive runtime actor membership on both sides from Sable's authoritative block stream.
         // Existing contexts retain their progress and disabled state; new ones start exactly once.
         if (entity.tickCount % 5 == 0) synchronize(entity, sub);
+        refreshDoorSettings(entity, sub);
         checkpoint(entity);
         return true;
+    }
+
+    /** Wrench settings belong to the live door, while movement behaviours read its snapshot. */
+    private static void refreshDoorSettings(AbstractContraptionEntity entity, SubLevel sub) {
+        var contraption = entity.getContraption();
+        for (var actor : contraption.getActors()) {
+            var context = actor.right;
+            if (context == null || !(actor.left.state().getBlock()
+                    instanceof com.simibubi.create.content.decoration.slidingDoor.SlidingDoorBlock)) continue;
+            var be = entity.level().getBlockEntity(sub.getPlot().getCenterBlock().offset(actor.left.pos()));
+            if (!(be instanceof com.simibubi.create.content.decoration.slidingDoor.SlidingDoorBlockEntity)
+                    || be.getBlockState().getBlock() != actor.left.state().getBlock()) continue;
+            var live = be.saveWithFullMetadata(entity.level().registryAccess());
+            if (live.equals(context.blockEntityData)) continue;
+            context.blockEntityData = live;
+            // A mode change must be evaluated even if the elevator's arrival state is unchanged.
+            context.data.remove("Open");
+            var info = new StructureBlockInfo(actor.left.pos(), actor.left.state(), live);
+            actor.setLeft(info);
+            contraption.getBlocks().put(info.pos(), info);
+        }
     }
 
     private static void synchronize(AbstractContraptionEntity entity, SubLevel sub) {
