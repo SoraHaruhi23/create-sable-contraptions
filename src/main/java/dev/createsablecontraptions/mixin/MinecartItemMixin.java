@@ -42,6 +42,16 @@ public abstract class MinecartItemMixin {
     @WrapMethod(method = "wrenchCanBeUsedToPickUpMinecartContraptions")
     private static void csc$pickupTransaction(PlayerInteractEvent.EntityInteract event, Operation<Void> original) {
         var family = PackedStructures.beginPickup(event.getTarget());
-        try { original.call(event); } finally { PackedStructures.endPickup(family); }
+        try {
+            if (com.simibubi.create.AllItems.WRENCH.isIn(event.getEntity().getItemInHand(event.getHand()))
+                    && PackedStructures.hasMountedChildren(family)) {
+                event.getEntity().displayClientMessage(net.minecraft.network.chat.Component.translatable(
+                        "csc.assembly.unpack_inner").withStyle(net.minecraft.ChatFormatting.RED), true);
+                event.setCanceled(true);
+                event.setCancellationResult(net.minecraft.world.InteractionResult.FAIL);
+                return;
+            }
+            original.call(event);
+        } finally { PackedStructures.endPickup(family); }
     }
 }

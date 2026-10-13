@@ -25,6 +25,9 @@ public abstract class PulleyRendererMixin {
         var sub = container.getSubLevel(((ElevatorLink) elevator).csc$getSubLevel());
         if (!(sub instanceof ClientSubLevel client) || sub.isRemoved()) return;
         var anchor = client.renderPose(partialTicks).transformPosition(Vec3.atLowerCornerOf(sub.getPlot().getCenterBlock()));
+        var parent = dev.ryanhcode.sable.Sable.HELPER.getContaining(pulley.getLevel(), pulley.getBlockPos());
+        if (parent instanceof ClientSubLevel frame)
+            anchor = frame.renderPose(partialTicks).transformPositionInverse(anchor);
         // Shared by Create's ordinary renderer and Flywheel elevator visual.
         cir.setReturnValue((float) (pulley.getBlockPos().getY() - 1 - anchor.y));
     }

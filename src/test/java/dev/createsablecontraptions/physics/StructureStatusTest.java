@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 class StructureStatusTest {
     @Test void incompleteChecksHaveSpecificReasons() {
-        for(int code:new int[]{StructureStatus.UNLOADED,StructureStatus.BUDGET,StructureStatus.BOUNDARY,StructureStatus.UNAVAILABLE}) {
+        for(int code:new int[]{StructureStatus.UNLOADED,StructureStatus.BUDGET,StructureStatus.BOUNDARY,StructureStatus.UNAVAILABLE,StructureStatus.CONTACT_MISSING,StructureStatus.ACTIVE_CHILD}) {
             assertEquals("stopped",StructureStatus.stateKey(code));
             assertFalse(StructureStatus.reasonKey(code).isEmpty());
             assertNotEquals("collision",StructureStatus.reasonKey(code));

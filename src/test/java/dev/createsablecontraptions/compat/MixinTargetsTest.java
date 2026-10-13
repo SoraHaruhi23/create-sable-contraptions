@@ -18,6 +18,74 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /** Checks pinned dependency bytecode without loading Minecraft, Mixins or native physics. */
 class MixinTargetsTest {
+    @Test void activeControllersAreRejectedBeforeBlockTransfer() throws Exception {
+        var method=compiled("mixin/ContraptionMixin").methods.stream()
+                .filter(m -> m.name.equals("csc$assemble")).findFirst().orElseThrow();
+        assertTrue(callIndex(method,"validateControllers") >= 0);
+        assertTrue(callIndex(method,"validateControllers") < callIndex(method,"assemble"));
+        var guard=compiled("elevator/AssemblyFrame").methods.stream()
+                .filter(m -> m.name.equals("validateControllers")).findFirst().orElseThrow();
+        assertTrue(callIndex(guard,"isAttachedTo") >= 0);
+    }
+    @Test void pickupChecksIndependentChildrenBeforeCallingCreate() throws Exception {
+        var method=compiled("mixin/MinecartItemMixin").methods.stream()
+                .filter(m -> m.name.equals("csc$pickupTransaction")).findFirst().orElseThrow();
+        assertTrue(callIndex(method,"hasMountedChildren") >= 0);
+        assertTrue(callIndex(method,"hasMountedChildren") < callIndex(method,"call"));
+        assertTrue(callIndex(method,"endPickup") >= 0);
+    }
+    @Test void physicalVisualSkipsSnapshotBlockEntitiesButKeepsMovementActors() throws Exception {
+        var visual=compiled("mixin/client/PhysicalActorVisualMixin");
+        var select=visual.methods.stream().filter(m->m.name.equals("csc$selectRealBlockEntities")).findFirst().orElseThrow();
+        assertTrue(callIndex(select,"managed")>=0);
+        var guard=visual.methods.stream().filter(m->m.name.equals("csc$realBlockEntityOwnsVisual")).findFirst().orElseThrow();
+        assertTrue(callIndex(guard,"cancel")>=0);
+        assertTrue(java.util.Arrays.stream(guard.instructions.toArray()).anyMatch(i ->
+                i instanceof FieldInsnNode field && field.name.equals("csc$physicalBlockEntities")));
+        var upstream=dependency("com/simibubi/create/content/contraptions/render/ContraptionVisual");
+        var children=upstream.methods.stream().filter(m->m.name.equals("setupChildren")).findFirst().orElseThrow();
+        assertTrue(callIndex(children,"setupVisualizer")>=0);
+        assertTrue(callIndex(children,"setupActor")>callIndex(children,"setupVisualizer"));
+        var frame=visual.methods.stream().filter(m->m.name.equals("csc$finalPhysicalPose")).findFirst().orElseThrow();
+        assertTrue(callIndex(frame,"partialTick")>=0);
+        assertTrue(callIndex(frame,"csc$updatePhysicalEmbedding")>callIndex(frame,"partialTick"));
+    }
+    @Test void nestedPulleyMeasuresRopeInControllerFrame() throws Exception {
+        var method=compiled("mixin/client/PulleyRendererMixin").methods.stream()
+                .filter(m -> m.name.equals("csc$followPhysicalAnchor")).findFirst().orElseThrow();
+        assertTrue(callIndex(method,"transformPosition")>=0);
+        assertTrue(callIndex(method,"transformPositionInverse")>callIndex(method,"transformPosition"));
+        assertTrue(callIndex(method,"setReturnValue")>callIndex(method,"transformPositionInverse"));
+    }
+    @Test void onlyTheOriginalElevatorColumnContactIsRequired() throws Exception {
+        var method=compiled("elevator/ElevatorEditing").methods.stream()
+                .filter(m -> m.name.equals("contactIntact")).findFirst().orElseThrow();
+        assertTrue(callIndex(method,"columnContact")>=0);
+        assertEquals(-1,callIndex(method,"getBlocks"));
+        var sync=compiled("elevator/ElevatorActors").methods.stream()
+                .filter(m -> m.name.equals("synchronize")).findFirst().orElseThrow();
+        assertTrue(callIndex(sync,"columnContact")>=0);
+    }
+    @Test void parentConstraintUsesLocalFrameBeforeWorldTeleport() throws Exception {
+        var hold = compiled("elevator/ElevatorPhysics").methods.stream()
+                .filter(m -> m.name.equals("hold")).findFirst().orElseThrow();
+        assertTrue(callIndex(hold, "available") < callIndex(hold, "addConstraint"));
+        assertTrue(callIndex(hold, "parent") < callIndex(hold, "addConstraint"));
+        assertTrue(callIndex(hold, "setFrame2") < callIndex(hold, "transformPosition"));
+        assertTrue(callIndex(hold, "transformPosition") < callIndex(hold, "bodyPosition"));
+        assertTrue(callIndex(hold, "bodyPosition") < callIndex(hold, "teleport"));
+    }
+
+    @Test void disassemblyValidatesSourcePlotAndRestoresTrackingPoints() throws Exception {
+        for (var path : List.of("elevator/ElevatorBridge", "bearing/BearingBridge")) {
+            var node = compiled(path);
+            var check = node.methods.stream().filter(m -> m.name.equals("canDisassemble")).findFirst().orElseThrow();
+            assertTrue(callIndex(check, "destination") >= 0);
+            assertTrue(callIndex(check, "withinWorld") >= 0);
+            var restore = node.methods.stream().filter(m -> m.name.equals("disassemble")).findFirst().orElseThrow();
+            assertTrue(callIndex(restore, "moveTrackingPoints") >= 0);
+        }
+    }
     @Test void coupledCartMembershipDoesNotMakeTheFollowerAMotionOwner() throws Exception {
         var impulse=compiled("oriented/CartImpulse");
         var membership=impulse.methods.stream().filter(m->m.name.equals("attachedStructure")).findFirst().orElseThrow();
@@ -435,7 +503,9 @@ class MixinTargetsTest {
 
     @Test void childTargetsAreRefreshedBeforeAnyBodyIsMoved() throws Exception {
         var method = compiled("elevator/ElevatorPhysics").methods.stream().filter(m -> m.name.equals("beforePhysics")).findFirst().orElseThrow();
-        assertTrue(callIndex(method,"children") >= 0 && callIndex(method,"children") < callIndex(method,"hold"));
+        assertTrue(callIndex(method,"children") >= 0 && callIndex(method,"children") < callIndex(method,"holdOrdered"));
+        var ordered = compiled("elevator/ElevatorPhysics").methods.stream().filter(m -> m.name.equals("holdOrdered")).findFirst().orElseThrow();
+        assertTrue(callIndex(ordered,"ordered") >= 0 && callIndex(ordered,"ordered") < callIndex(ordered,"hold"));
         var target = compiled("oriented/OrientedBridge").methods.stream().filter(m -> m.name.equals("target")).findFirst().orElseThrow();
         assertTrue(callIndex(target,"getBearingPosOf") >= 0);
         assertTrue(callIndex(target,"toGlobalVector") >= 0);
@@ -606,7 +676,7 @@ class MixinTargetsTest {
             assertEquals(-1, callIndex(target, premature), "Controller must queue its target until after the snapshot");
         for (String event : List.of("beforePhysics", "afterPhysics")) {
             var handler = ours.methods.stream().filter(m -> m.name.equals(event)).findFirst().orElseThrow();
-            assertTrue(callIndex(handler, "hold") >= 0, "Apply/correct the pose only during the physical step");
+            assertTrue(callIndex(handler, "holdOrdered") >= 0, "Apply/correct parent then child only during the physical step");
         }
     }
 

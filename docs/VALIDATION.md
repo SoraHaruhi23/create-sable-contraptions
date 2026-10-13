@@ -1,6 +1,24 @@
 # 验证与已知限制
 
-适用版本：0.7.7-beta。整理日期：2026-10-04。
+适用版本：0.8.0-beta。整理日期：2026-10-13。
+
+## Nested elevator regression / 嵌套电梯回归
+
+- [ ] Reject outer assembly with an active inner controller, preserving blocks and showing an order hint. / 内层已装配时，外层装配应被阻止，保留方块并提示先外后内。
+- [ ] Reject wrench pickup of a cart carrying independently assembled inner mechanisms; retry after inner disassembly. / 矿车承载独立装配的内层机构时，扳手打包应被阻止；先拆卸内层后重试。
+- [ ] Run inner and outer elevators separately and together, then reverse; ropes and collision outlines follow their actual blocks. / 分别及同时运行内外电梯，再反转，检查绳索与碰撞高亮。
+- [ ] Add/remove extra contacts and controls; only the original column contact is required. / 增删额外接触器与控制器，只要求原始定位接触器保持正确。
+- [ ] Carry the inner elevator toward a ceiling; the outer elevator must stop. Save/reload and disassemble inner before outer. / 内层随外层接近天花板，外层应停转；检查保存重载，按先内后外顺序拆卸。
+
+## Sublevel assembly / 父物理结构装配
+
+- [ ] Stationary/moving/rotating parent: assemble, operate, stop, reverse and disassemble bearings and linear mechanisms. / 静止、移动、旋转的父结构：轴承和直线机构装配、运行、停转、反向及拆卸。
+- [ ] Save/reload; check parent association, inventories, fluids and rider positions. / 保存重载后检查父结构关联、库存、流体及乘员位置。
+- [ ] Minecart item placement on parent rails and in the ordinary world; assembler entry/exit. / 矿车物品在父结构轨道和普通世界放置，驶入、驶出装配站。
+- [ ] Both render backends, two clients, drill collisions and same-parent portable interfaces. / 普通与 Flywheel 渲染、双客户端、钻头碰撞及同父结构便携式接口。
+
+Unscaled parents only. Parent removal, high-speed parent movement and cross-sublevel docking need separate validation; collision prediction uses the parent's current pose.
+仅支持未缩放父结构。父结构移除、高速父结构运动及跨 sublevel 接口对接需另行验证；碰撞预测使用父结构当前姿态。
 
 ## Coupled-cart fix / 0.7.7-beta 双矿车修复
 

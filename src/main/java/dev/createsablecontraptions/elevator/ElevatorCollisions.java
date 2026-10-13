@@ -25,9 +25,12 @@ public final class ElevatorCollisions {
         var own = ElevatorBridge.resolve(level, elevator);
         if (own == null) return CollisionState.fail(entity,StructureStatus.UNAVAILABLE);
         if (!ElevatorEditing.valid(level, own, elevator)) return CollisionState.fail(entity,StructureStatus.UNAVAILABLE);
+        if(!AssemblyFrame.available(own))return CollisionState.fail(entity,StructureStatus.UNAVAILABLE);
+        var parent=AssemblyFrame.parent(own);
+        var worldMotion=AssemblyFrame.direction(parent,motion);
         var data = ElevatorBridge.data(own);
         BlockPos plotAnchor = BlockPos.of(data.getLong("PlotAnchor"));
-        List<AABB> boxes = new ArrayList<>();
+        List<SweptBox.Box> boxes = new ArrayList<>();
         List<BlockPos> locals = new ArrayList<>();
         AABB swept = null;
         for (long packed : data.getLongArray("Blocks")) {
@@ -36,17 +39,39 @@ public final class ElevatorCollisions {
             var state = level.getBlockState(plotPos);
             for (AABB local : state.getCollisionShape(level, plotPos).toAabbs()) {
                 AABB box = local.move(position).move(anchor);
-                boxes.add(box);
+                var oriented=parent==null?aligned(box):oriented(box,parent.logicalPose());
+                boxes.add(oriented);
                 locals.add(position);
-                AABB path = box.expandTowards(motion);
+                AABB path = bounds(oriented).expandTowards(worldMotion);
                 swept = swept == null ? path : swept.minmax(path);
+            }
+        }
+        // Sublevel-mounted controllers are not Create passengers. Carry their real
+        // bodies in the parent's sweep, rather than colliding with them as obstacles.
+        var oldPivot = own.logicalPose().transformPosition(new Vector3d(plotAnchor.getX()+.5, plotAnchor.getY()+.5, plotAnchor.getZ()+.5));
+        var targetPivot = AssemblyFrame.world(parent, anchor.add(.5,.5,.5));
+        var targetRotation = AssemblyFrame.rotation(parent, new org.joml.Quaterniond());
+        for (var child : SubLevelContainer.getContainer(level).getAllSubLevels()) {
+            if (child.isRemoved() || !AssemblyFrame.descendant(child, own)) continue;
+            if (!ElevatorEditing.valid(level, child, null)) return CollisionState.fail(entity, StructureStatus.UNAVAILABLE);
+            var childAnchor = BlockPos.of(ElevatorBridge.data(child).getLong("PlotAnchor"));
+            for (long packed : ElevatorBridge.data(child).getLongArray("Blocks")) {
+                var pos = childAnchor.offset(BlockPos.of(packed));
+                for (var shape : level.getBlockState(pos).getCollisionShape(level,pos).toAabbs()) {
+                    var box = dev.createsablecontraptions.physics.CarriedFrame.move(oriented(shape.move(pos),child.logicalPose()),
+                            oldPivot, own.logicalPose().orientation(), new Vector3d(targetPivot.x,targetPivot.y,targetPivot.z), targetRotation);
+                    boxes.add(box);
+                    locals.add(null); // inherited movement; this is not an actor of the parent
+                    var path = bounds(box).expandTowards(worldMotion);
+                    swept = swept == null ? path : swept.minmax(path);
+                }
             }
         }
         if (swept == null) return false;
         if (swept.minY < level.getMinBuildHeight() || swept.maxY > level.getMaxBuildHeight()
                 || !level.getWorldBorder().isWithinBounds(swept)) return CollisionState.fail(entity,StructureStatus.BOUNDARY);
         if (volume(swept) > MAX_QUERY_BLOCKS) return CollisionState.fail(entity,StructureStatus.BUDGET);
-        SweptBox.V velocity = vector(motion);
+        SweptBox.V velocity = vector(worldMotion);
         boolean blocked = false;
         long comparisons = 0;
         for (BlockPos pos : BlockPos.betweenClosed(BlockPos.containing(swept.minX, swept.minY, swept.minZ),
@@ -56,20 +81,20 @@ public final class ElevatorCollisions {
                 SweptBox.Box stationary = aligned(obstacle.move(pos));
                 for (int i = 0; i < boxes.size(); i++) {
                     if (++comparisons > 2_000_000) return CollisionState.fail(entity,StructureStatus.BUDGET);
-                    var movingState = level.getBlockState(plotAnchor.offset(locals.get(i)));
-                    if (dev.createsablecontraptions.linear.PistonParts.cylinderSlot(elevator, pos, movingState)
+                    var movingState = locals.get(i)==null ? null : level.getBlockState(plotAnchor.offset(locals.get(i)));
+                    if (movingState != null && dev.createsablecontraptions.linear.PistonParts.cylinderSlot(elevator, pos, movingState)
                             && dev.createsablecontraptions.linear.PistonParts.cylinder(level.getBlockState(pos))) continue;
-                    if (SweptBox.blocked(aligned(boxes.get(i)), velocity, stationary)) {
+                    if (SweptBox.blocked(boxes.get(i), velocity, stationary)) {
                         blocked = true;
                         CollisionState.contact(entity,pos);
-                        dev.createsablecontraptions.linear.CollisionDrilling.offer(elevator, locals.get(i), pos, motion);
+                        if (locals.get(i)!=null) dev.createsablecontraptions.linear.CollisionDrilling.offer(elevator, locals.get(i), pos, motion);
                     }
                 }
             }
         }
         var container = SubLevelContainer.getContainer(level);
         for (SubLevel other : container.getAllSubLevels()) {
-            if (other == own || other.isRemoved()) continue;
+            if (other == own || other.isRemoved() || AssemblyFrame.descendant(other, own)) continue;
             if (elevator.entity != null && dev.createsablecontraptions.oriented.PhysicalFamily.related(elevator.entity, other.getUniqueId())) continue;
             var bounds = other.boundingBox();
             AABB global = new AABB(bounds.minX(), bounds.minY(), bounds.minZ(), bounds.maxX(), bounds.maxY(), bounds.maxZ());
@@ -86,11 +111,14 @@ public final class ElevatorCollisions {
                 for (AABB shape : level.getBlockState(pos).getCollisionShape(level, pos).toAabbs()) {
                     SweptBox.Box obstacle = oriented(shape.move(pos), pose);
                     for (int i = 0; i < boxes.size(); i++) {
+                        var movingState=locals.get(i)==null ? null : level.getBlockState(plotAnchor.offset(locals.get(i)));
+                        if(movingState != null && dev.createsablecontraptions.linear.PistonParts.cylinderSlot(elevator,pos,movingState)
+                                && dev.createsablecontraptions.linear.PistonParts.cylinder(level.getBlockState(pos)))continue;
                         if (++comparisons > 2_000_000) return CollisionState.fail(entity,StructureStatus.BUDGET);
-                        if (SweptBox.blocked(aligned(boxes.get(i)), velocity, obstacle)) {
+                        if (SweptBox.blocked(boxes.get(i), velocity, obstacle)) {
                             blocked = true;
                             CollisionState.contact(entity,pos);
-                            dev.createsablecontraptions.linear.CollisionDrilling.offer(elevator, locals.get(i), pos, motion);
+                            if (locals.get(i)!=null) dev.createsablecontraptions.linear.CollisionDrilling.offer(elevator, locals.get(i), pos, motion);
                         }
                     }
                 }
@@ -102,6 +130,12 @@ public final class ElevatorCollisions {
         return blocked | children;
     }
 
+    public static AABB bounds(SweptBox.Box b) {
+        double x=Math.abs(b.x().x())*b.half().x()+Math.abs(b.y().x())*b.half().y()+Math.abs(b.z().x())*b.half().z();
+        double y=Math.abs(b.x().y())*b.half().x()+Math.abs(b.y().y())*b.half().y()+Math.abs(b.z().y())*b.half().z();
+        double z=Math.abs(b.x().z())*b.half().x()+Math.abs(b.y().z())*b.half().y()+Math.abs(b.z().z())*b.half().z();
+        return new AABB(b.center().x()-x,b.center().y()-y,b.center().z()-z,b.center().x()+x,b.center().y()+y,b.center().z()+z);
+    }
     private static long volume(AABB b) {
         return (long) Math.ceil(b.getXsize() + 2) * (long) Math.ceil(b.getYsize() + 2) * (long) Math.ceil(b.getZsize() + 2);
     }

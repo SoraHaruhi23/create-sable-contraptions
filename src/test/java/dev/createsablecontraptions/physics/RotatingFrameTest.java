@@ -6,6 +6,28 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class RotatingFrameTest {
+    @Test void childPivotSurvivesTranslatedAndTiltedParentFrame() {
+        var parentRotation = new Quaterniond().rotationXYZ(.4, -.8, 1.2);
+        var parentOrigin = new Vector3d(-120, 90, 45);
+        var childPivotInParent = new Vector3d(PLOT).add(2, 3, -4);
+        var worldPivot = parentRotation.transform(new Vector3d(childPivotInParent).sub(PLOT)).add(parentOrigin);
+        var localRotation = new Quaterniond().rotationZ(.73);
+        var combined = new Quaterniond(parentRotation).mul(localRotation);
+        var mass = new Vector3d(PLOT).add(3, -1, 5);
+        var position = RotatingFrame.bodyPosition(mass, PLOT, worldPivot, combined);
+        var actual = combined.transform(new Vector3d(PLOT).sub(mass)).add(position);
+        assertVector(worldPivot, actual);
+        assertVector(childPivotInParent, new Quaterniond(parentRotation).conjugate()
+                .transform(new Vector3d(actual).sub(parentOrigin)).add(PLOT));
+    }
+
+    @Test void parentRotationPrecedesLocalActuatorRotation() {
+        var parent = new Quaterniond(Math.sin(Math.PI / 4), 0, 0, Math.cos(Math.PI / 4));
+        var local = new Quaterniond().rotationZ(Math.PI / 2);
+        var combined = new Quaterniond(parent).mul(local);
+        assertVector(new Vector3d(0, 0, 2), RotatingFrame.bodyPosition(
+                new Vector3d(PLOT).add(2, 0, 0), PLOT, new Vector3d(), combined));
+    }
     private static final Vector3d PLOT = new Vector3d(30_000_000.5, 64.5, 30_000_000.5);
     private static final Vector3d WORLD = new Vector3d(-23.5, 77.5, 19.5);
     private static void assertVector(Vector3d expected, Vector3d actual) {

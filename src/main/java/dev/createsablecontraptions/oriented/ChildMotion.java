@@ -1,4 +1,5 @@
 package dev.createsablecontraptions.oriented;
+import dev.createsablecontraptions.elevator.AssemblyFrame;
 
 import com.simibubi.create.content.contraptions.*;
 import dev.ryanhcode.sable.api.sublevel.SubLevelContainer;
@@ -58,10 +59,11 @@ public final class ChildMotion {
             if (sub == null) throw new CollectionFailure(StructureStatus.UNAVAILABLE,"子结构物理体不可用");
             Vec3 localAttachment = Vec3.atCenterOf(attachment);
             double radius = orbitRadius < 0 ? localAttachment.subtract(.5, .5, .5).length() : orbitRadius;
-            Path childPath = (p, t) -> path.at(localAttachment, t).add(child.applyRotation(p.subtract(.5, .5, .5), 1));
-            var x = v(child.applyRotation(new Vec3(1, 0, 0), 1));
-            var y = v(child.applyRotation(new Vec3(0, 1, 0), 1));
-            var z = v(child.applyRotation(new Vec3(0, 0, 1), 1));
+            var frame=AssemblyFrame.at(child.level(),child.position());
+            Path childPath = (p, t) -> path.at(localAttachment, t).add(AssemblyFrame.direction(frame,child.applyRotation(p.subtract(.5, .5, .5), 1)));
+            var x = v(AssemblyFrame.direction(frame,child.applyRotation(new Vec3(1, 0, 0), 1)));
+            var y = v(AssemblyFrame.direction(frame,child.applyRotation(new Vec3(0, 1, 0), 1)));
+            var z = v(AssemblyFrame.direction(frame,child.applyRotation(new Vec3(0, 0, 1), 1)));
             if (!(sub instanceof dev.ryanhcode.sable.sublevel.ServerSubLevel server)) throw new CollectionFailure(StructureStatus.UNAVAILABLE,"子结构物理体不可用");
             for (long packed : ElevatorBridge.data(server).getLongArray("Blocks")) {
                 var local = BlockPos.of(packed); var pos = sub.getPlot().getCenterBlock().offset(local);
@@ -88,6 +90,17 @@ public final class ChildMotion {
     }
     private static boolean check(AbstractContraptionEntity root, Path path, double radians, boolean includeRoot, Turn turn) {
         if (!(root.level() instanceof ServerLevel level) || !ElevatorLink.managed(root.getContraption())) return false;
+        var own = ElevatorBridge.resolve(level, root.getContraption());
+        if (own == null || !AssemblyFrame.available(own))
+            return CartStatus.fail(root, StructureStatus.UNAVAILABLE, "父物理结构不可用");
+        var frame=AssemblyFrame.at(level,root.position());
+        if(frame!=null) {
+            Path original=path;
+            path=(p,t)->AssemblyFrame.world(frame,original.at(p,t));
+            if(turn!=null)turn=new Turn(frame.logicalPose().transformPosition(new Vector3d(turn.start)),
+                    frame.logicalPose().transformPosition(new Vector3d(turn.end)),
+                    AssemblyFrame.rotation(frame,turn.from),AssemblyFrame.rotation(frame,turn.to));
+        }
         CartStatus.begin(root,path.at(Vec3.ZERO,1).subtract(path.at(Vec3.ZERO,0)));
         var shapes = new ArrayList<Shape>();
         try {
@@ -129,7 +142,11 @@ public final class ChildMotion {
             if (volume(query) > 32768) return CartStatus.fail(root,dev.createsablecontraptions.physics.StructureStatus.BUDGET,"另一物理结构的查询体积超过 32768");
             for (var pos : positions(query)) {
                 if (!level.isLoaded(pos)) return CartStatus.fail(root,dev.createsablecontraptions.physics.StructureStatus.UNLOADED,"另一物理结构的区块未加载");
-                for (var box : level.getBlockState(pos).getCollisionShape(level,pos).toAabbs()) {
+                var state = level.getBlockState(pos);
+                var context = includeRoot && state.getBlock() instanceof com.simibubi.create.content.contraptions.mounted.CartAssemblerBlock
+                        && root.getVehicle() instanceof net.minecraft.world.entity.vehicle.AbstractMinecart cart
+                        ? net.minecraft.world.phys.shapes.CollisionContext.of(cart) : net.minecraft.world.phys.shapes.CollisionContext.empty();
+                for (var box : state.getCollisionShape(level,pos,context).toAabbs()) {
                     blocked |= hit(root,shapes, ElevatorCollisions.oriented(box.move(pos),other.logicalPose()),pos,comparisons);
                     if (comparisons[0] > 2_000_000) return CartStatus.fail(root,dev.createsablecontraptions.physics.StructureStatus.BUDGET,"碰撞比较次数超过 2000000");
                 }
@@ -139,9 +156,10 @@ public final class ChildMotion {
     }
     private static void collectCartBody(AbstractContraptionEntity root,Path path,List<Shape> shapes,int[] budget,Turn turn) {
         if (!(ElevatorActors.sub(root) instanceof dev.ryanhcode.sable.sublevel.ServerSubLevel sub)) throw new CollectionFailure(StructureStatus.UNAVAILABLE,"主结构物理体不可用");
-        var x=v(root.applyRotation(new Vec3(1,0,0),1));
-        var y=v(root.applyRotation(new Vec3(0,1,0),1));
-        var z=v(root.applyRotation(new Vec3(0,0,1),1));
+        var frame=AssemblyFrame.at(root.level(),root.position());
+        var x=v(AssemblyFrame.direction(frame,root.applyRotation(new Vec3(1,0,0),1)));
+        var y=v(AssemblyFrame.direction(frame,root.applyRotation(new Vec3(0,1,0),1)));
+        var z=v(AssemblyFrame.direction(frame,root.applyRotation(new Vec3(0,0,1),1)));
         for(long packed:ElevatorBridge.data(sub).getLongArray("Blocks")) {
             var local=BlockPos.of(packed);
             if(OrientedBridge.virtualAnchor(root.getContraption(),local)) continue;
@@ -176,7 +194,7 @@ public final class ChildMotion {
             var motion=shape.rigid==null ? new Vec3(step.motion().x(),step.motion().y(),step.motion().z())
                     : vec(shape.rigid.centerMotion());
             dev.createsablecontraptions.linear.CollisionDrilling.offer(shape.owner.getContraption(),shape.local,pos,
-                    motion);
+                    AssemblyFrame.localDirection(AssemblyFrame.at(shape.owner.level(), shape.owner.position()), motion));
             break;
         }
         return blocked;
@@ -186,9 +204,6 @@ public final class ChildMotion {
     private static SweptBox.V v(Vec3 p) { return new SweptBox.V(p.x,p.y,p.z); }
     private static Vec3 vec(Vector3d p) { return new Vec3(p.x,p.y,p.z); }
     private static AABB bounds(SweptBox.Box b) {
-        double x = Math.abs(b.x().x())*b.half().x()+Math.abs(b.y().x())*b.half().y()+Math.abs(b.z().x())*b.half().z();
-        double y = Math.abs(b.x().y())*b.half().x()+Math.abs(b.y().y())*b.half().y()+Math.abs(b.z().y())*b.half().z();
-        double z = Math.abs(b.x().z())*b.half().x()+Math.abs(b.y().z())*b.half().y()+Math.abs(b.z().z())*b.half().z();
-        return new AABB(b.center().x()-x,b.center().y()-y,b.center().z()-z,b.center().x()+x,b.center().y()+y,b.center().z()+z);
+        return dev.createsablecontraptions.elevator.ElevatorCollisions.bounds(b);
     }
 }

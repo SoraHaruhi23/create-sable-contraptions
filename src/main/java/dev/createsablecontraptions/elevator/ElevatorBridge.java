@@ -37,7 +37,8 @@ public final class ElevatorBridge {
     private ElevatorBridge() {}
 
     public static void validate(ElevatorContraption elevator, Level level) throws AssemblyException {
-        if (Sable.HELPER.getContaining(level, elevator.anchor) != null) fail("nested");
+        var parent=Sable.HELPER.getContaining(level,elevator.anchor);
+        if (!AssemblyFrame.usable(parent)) fail("nested");
     }
 
     private static void fail(String key) throws AssemblyException {
@@ -54,11 +55,14 @@ public final class ElevatorBridge {
     public static void assemble(ServerLevel level, Contraption elevator, BlockPos offset) {
         if (ElevatorLink.managed(elevator)) throw new IllegalStateException("Elevator already assembled");
         BlockPos origin = elevator.anchor.offset(offset);
+        var parent=Sable.HELPER.getContaining(level,origin);
         BlockPos cylinder = dev.createsablecontraptions.linear.PistonParts.controller(elevator);
         List<BlockPos> source = elevator.getBlocks().keySet().stream()
                 .filter(p -> !dev.createsablecontraptions.oriented.OrientedBridge.virtualAnchor(elevator, p)).map(origin::offset)
                 .filter(p -> !p.equals(cylinder)).toList();
         BoundingBox3i bounds = bounds(source);
+        if(source.stream().anyMatch(p->Sable.HELPER.getContaining(level,p)!=parent))
+            throw new IllegalStateException("Assembly cannot span multiple source plots");
         // Snapshot actual world state, rather than Create's potentially transformed capture state.
         List<StructureBlockInfo> backup = new ArrayList<>();
         for (BlockPos pos : source) {
@@ -91,6 +95,7 @@ public final class ElevatorBridge {
                 level.setBlock(plotAnchor.offset(local), captured.state(), Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
             }
             CompoundTag data = new CompoundTag();
+            if(parent!=null)data.putUUID("ParentSubLevel",parent.getUniqueId());
             data.putInt("Schema", 1);
             data.putBoolean("Bearing", ElevatorLink.bearing(elevator));
             data.putLong("PlotAnchor", plotAnchor.asLong());
@@ -137,12 +142,18 @@ public final class ElevatorBridge {
     public static boolean canDisassemble(ServerLevel level, ElevatorContraption elevator, Vec3 target) {
         ServerSubLevel sub = resolve(level, elevator);
         if (sub == null) return false; // Never reconstruct from the stale Create snapshot.
+        if (AssemblyFrame.hasChildren(sub)) {
+            dev.createsablecontraptions.physics.CollisionState.fail(elevator.entity,
+                    dev.createsablecontraptions.physics.StructureStatus.ACTIVE_CHILD);
+            return false;
+        }
         if (!ElevatorEditing.reconcile(sub) || !ElevatorEditing.valid(level, sub, elevator)) return false;
         BlockPos anchor = BlockPos.containing(target.add(.5, .5, .5));
         BlockPos plotAnchor = BlockPos.of(data(sub).getLong("PlotAnchor"));
         for (long packed : data(sub).getLongArray("Blocks")) {
             BlockPos local = BlockPos.of(packed), dest = anchor.offset(local);
-            if (level.isOutsideBuildHeight(dest) || !level.getWorldBorder().isWithinBounds(dest) || !level.isLoaded(dest)) return false;
+            if(!AssemblyFrame.destination(sub,dest))return false;
+            if (!AssemblyFrame.withinWorld(sub, dest) || !level.isLoaded(dest)) return false;
             if (!level.getBlockState(dest).isAir()) return false;
             if (!ElevatorControlsBridge.hasActorData(level, elevator, local, plotAnchor.offset(local))) return false;
         }
@@ -173,6 +184,7 @@ public final class ElevatorBridge {
                     || info.nbt() != null && level.getBlockEntity(target.offset(info.pos())) == null)
                 throw new IllegalStateException("Elevator disassembly verification failed; recovery required");
         }
+        SubLevelAssemblyHelper.moveTrackingPoints(level, bounds(source), AssemblyFrame.parent(sub), transfer);
         ElevatorPhysics.release(sub);
         var container = SubLevelContainer.getContainer(level);
         container.removeForceLoadTicket(sub, ElevatorPhysics.TICKET, net.minecraft.util.Unit.INSTANCE);

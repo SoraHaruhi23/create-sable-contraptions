@@ -48,6 +48,14 @@ public final class PackedStructures {
         var list = PICKUP.get();
         return list != null && !list.isEmpty() && list.getFirst().isRemoved() && list.contains(e);
     }
+    public static boolean hasMountedChildren(List<AbstractContraptionEntity> family) {
+        for (var entity : family) {
+            if (!(entity.level() instanceof ServerLevel level)) continue;
+            var sub = ElevatorBridge.resolve(level, entity.getContraption());
+            if (sub != null && AssemblyFrame.hasChildren(sub)) return true;
+        }
+        return false;
+    }
     public static void endPickup(List<AbstractContraptionEntity> list) {
         try {
             if (list.isEmpty() || !list.getFirst().isRemoved()) return; // Native size/permission failure leaves every body intact.
@@ -150,6 +158,13 @@ public final class PackedStructures {
         var pose = new Pose3d();
         var initialAnchor=e.getAnchorVec();
         pose.position().set(initialAnchor.x+.5,initialAnchor.y+.5,initialAnchor.z+.5);
+        var initialParent=dev.createsablecontraptions.elevator.AssemblyFrame.at(level,initialAnchor);
+        if (!AssemblyFrame.usable(initialParent))
+            throw new IllegalStateException("Assembly requires an available, unscaled parent sublevel");
+        if(initialParent!=null) {
+            initialParent.logicalPose().transformPosition(pose.position());
+            pose.orientation().set(initialParent.logicalPose().orientation());
+        }
         var sub = (ServerSubLevel) container.allocateNewSubLevel(pose);
         tx.undo(() -> { ((ElevatorLink)e.getContraption()).csc$setSubLevel(null); remove(sub); });
         PlacementTrace.phase("物理结构分配",phaseStarted);
@@ -157,6 +172,10 @@ public final class PackedStructures {
             phaseStarted=System.nanoTime();
             var anchor = sub.getPlot().getCenterBlock();
             var data = packed.getCompound("PhysicsData").copy();
+            // Item placement establishes a new source frame; never keep the packed parent's UUID.
+            data.remove("ParentSubLevel");
+            var placementParent=dev.createsablecontraptions.elevator.AssemblyFrame.at(level,e.getAnchorVec());
+            if(placementParent!=null)data.putUUID("ParentSubLevel",placementParent.getUniqueId());
             data.putLong("PlotAnchor", anchor.asLong());
             data.putDouble("X", e.getAnchorVec().x); data.putDouble("Y", e.getAnchorVec().y); data.putDouble("Z", e.getAnchorVec().z);
             var root = new CompoundTag(); root.put(ElevatorBridge.TAG, data); sub.setUserDataTag(root);

@@ -1,6 +1,17 @@
 # 更新记录
 
-当前版本：**0.7.7-beta**。以下按版本保留当时的名称、修改与验证结论；历史条目中的待验证问题可能已在后续版本处理。当前使用说明见 [README](README.md)，当前验收状态见 [验证与已知限制](docs/VALIDATION.md)。
+当前版本：**0.8.0-beta**。以下按版本保留当时的名称、修改与验证结论；历史条目中的待验证问题可能已在后续版本处理。当前使用说明见 [README](README.md)，当前验收状态见 [验证与已知限制](docs/VALIDATION.md)。
+
+# 0.8.0-beta
+
+- Assemble supported contraptions on unscaled Sable sublevels; compose parent pose with actuator movement, save the parent link, and disassemble back into the source plot.
+- Adapt collision queries, cart alignment, actor rendering and same-parent docking to the source frame. Packed carts establish a new parent on placement.
+- Fix nested pulley ropes, elevator contact checks and carried-structure collisions; remove duplicate Flywheel visuals and update parent physics before children.
+- Guard active inner controllers and nested cart pickup, validate parent chains, handle invalid fluid indices and reuse geometry helpers.
+- 支持在未缩放的 Sable sublevel 上装配已有类型的物理动态结构，叠加父结构姿态与机构运动，保存父结构关联，拆卸回原结构。
+- 适配碰撞检测、矿车对齐、工作部件渲染与同一父结构上的接口停靠；矿车物品放置时重新确定父结构。
+- 修复嵌套滑轮绳索、电梯接触器校验和随动结构碰撞，消除 Flywheel 重复画面，父结构先于子结构更新物理姿态。
+- 保护已装配内层控制器及嵌套矿车打包，校验父结构链，处理非法流体索引，复用几何辅助逻辑。
 
 # 0.7.7-beta
 

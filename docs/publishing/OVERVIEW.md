@@ -8,9 +8,11 @@ Bring familiar Create contraptions into Sable physics.
 
 Supports elevators, mechanical/windmill/clockwork bearings, pulleys, mechanical pistons, gantries, minecart contraptions, and stabilized children while retaining their controls and movement behaviors. Features include collision stopping, editing while moving, inventory and fluid access, interface docking, and goggle status hints. Regular trains are not converted.
 
+Supported mechanisms can also be assembled on unscaled Sable structures and follow their parent. Assemble outer mechanisms first and disassemble inner mechanisms first.
+
 For Minecraft 1.21.1 / NeoForge. Requires Java 21, NeoForge 21.1.228+, Create 6.0.10+, and Sable 2.0.3+.
 
-Current version: **0.7.7-beta**. Install the regular JAR and use matching versions on clients and servers. Back up worlds before upgrading; data from the former mod ID requires migration through 0.7.3-alpha.
+Current version: **0.8.0-beta**. Install the regular JAR and use matching versions on clients and servers. Back up worlds before upgrading; data from the former mod ID requires migration through 0.7.3-alpha.
 
 ## 中文
 
@@ -18,12 +20,14 @@ Current version: **0.7.7-beta**. Install the regular JAR and use matching versio
 
 支持电梯、机械/风车/时钟轴承、滑轮、动力活塞、龙门、矿车及稳定子结构，保留原有控制与移动工作行为。提供碰撞停转、运行中编辑、库存与流体交互、接口对接，以及工程师护目镜状态提示。普通列车不进行物理化。
 
+支持在未缩放的 Sable 结构上装配机构并跟随父结构。装配先外层，拆卸先内层。
+
 适用于 Minecraft 1.21.1 / NeoForge，需要 Java 21、NeoForge 21.1.228+、Create 6.0.10+ 和 Sable 2.0.3+。
 
-当前版本：**0.7.7-beta**。安装普通 JAR，客户端和服务端保持版本一致。升级前备份存档；旧名称版本须先经过 0.7.3-alpha 转换。
+当前版本：**0.8.0-beta**。安装普通 JAR，客户端和服务端保持版本一致。升级前备份存档；旧名称版本须先经过 0.7.3-alpha 转换。
 
 ---
 
-[Installation & details / 安装与说明](../../README.md) · [Release notes / 发布说明](../RELEASE-0.7.7-beta.md)
+[Installation & details / 安装与说明](../../README.md) · [Release notes / 发布说明](../RELEASE-0.8.0-beta.md)
 
 **LGPL-3.0-or-later** Community compatibility addon; not an official Create or Sable project. / 社区兼容扩展，非官方项目。

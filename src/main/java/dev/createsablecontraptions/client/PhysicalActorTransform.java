@@ -11,13 +11,21 @@ import org.joml.Vector3d;
 public final class PhysicalActorTransform {
     private PhysicalActorTransform() {}
     public static boolean apply(PoseStack stack, AbstractContraptionEntity entity, float partialTick,
-                                 double originX, double originY, double originZ) {
+                                 double originX, double originY, double originZ, boolean sourceFrame) {
         if (!(ElevatorActors.sub(entity) instanceof ClientSubLevel sub) || sub.isRemoved()) return false;
         var pose = sub.renderPose(partialTick);
         var anchor = sub.getPlot().getCenterBlock();
         var position = pose.transformPosition(new Vector3d(anchor.getX(), anchor.getY(), anchor.getZ()));
+        var rotation = new org.joml.Quaterniond(pose.orientation());
+        var parent = dev.createsablecontraptions.elevator.AssemblyFrame.at(entity.level(), entity.position());
+        if (sourceFrame && parent instanceof ClientSubLevel frame) {
+            // Vanilla rendering already applies the source sublevel's pose outside this model.
+            var parentPose = frame.renderPose(partialTick);
+            parentPose.transformPositionInverse(position);
+            rotation = new org.joml.Quaterniond(parentPose.orientation()).conjugate().mul(rotation);
+        }
         stack.translate(position.x - originX, position.y - originY, position.z - originZ);
-        stack.mulPose(new Quaternionf(pose.orientation()));
+        stack.mulPose(new Quaternionf(rotation));
         var scale = pose.scale();
         stack.scale((float) scale.x(), (float) scale.y(), (float) scale.z());
         return true;

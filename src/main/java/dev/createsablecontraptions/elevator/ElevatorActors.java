@@ -89,7 +89,8 @@ public final class ElevatorActors {
         for (var local : positions) {
             var previous = contraption.getBlocks().get(local);
             var state = found.get(local);
-            if (contraption instanceof ElevatorContraption && previous != null && AllBlocks.REDSTONE_CONTACT.has(previous.state())) continue; // fixed elevator column reference
+            if (contraption instanceof ElevatorContraption elevator
+                    && local.equals(ElevatorEditing.columnContact(elevator))) continue; // only the original column reference is fixed
             if (previous != null && previous.state().equals(state)) continue;
             var actor = contraption.getActorAt(local);
             boolean sameBlock = previous != null && state != null && previous.state().getBlock() == state.getBlock();

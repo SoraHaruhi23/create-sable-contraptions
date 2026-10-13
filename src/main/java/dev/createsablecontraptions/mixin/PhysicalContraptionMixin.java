@@ -36,7 +36,9 @@ public abstract class PhysicalContraptionMixin implements ElevatorLink, dev.crea
 
     @Inject(method = "searchMovedStructure", at = @At("HEAD"))
     private void csc$worldAnchorOnly(Level level, BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> cir) throws AssemblyException {
-        if (ElevatorLink.supported((Contraption) (Object) this) && Sable.HELPER.getContaining(level, pos) != null)
+        var parent=Sable.HELPER.getContaining(level,pos);
+        if (ElevatorLink.supported((Contraption) (Object) this)
+                && !dev.createsablecontraptions.elevator.AssemblyFrame.usable(parent))
             throw new AssemblyException(net.minecraft.network.chat.Component.translatable("csc.assembly.nested"));
     }
 

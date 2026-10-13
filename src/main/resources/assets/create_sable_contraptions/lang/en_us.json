@@ -1,7 +1,11 @@
 {
+  "csc.assembly.active_inner": "Assemble the outer structure first, then its inner mechanisms. Disassemble the active inner mechanism before moving its controller.",
+  "csc.assembly.unpack_inner": "Disassemble the inner mechanisms before packing this minecart.",
+  "csc.goggles.reason.active_child": "Reason: Disassemble nested mechanisms first",
+  "csc.goggles.reason.contact_missing": "Reason: Elevator column contact missing or reoriented",
   "csc.assembly.assembler_protected": "This contraption is controlled by Create. Use its original controller to disassemble it, not a Physics Assembler.",
   "csc.assembly.failed": "Sable contraption assembly failed; original blocks were restored where possible. See the log for details.",
-  "csc.assembly.nested": "The controller and blocks must start in the static world. Nested assembly is not supported yet.",
+  "csc.assembly.nested": "Assembly requires an available, unscaled parent sublevel.",
   "csc.goggles.reason.drill": "Reason: Drill breaking blocks",
   "csc.goggles.reason.deployer": "Reason: Deployer working",
   "csc.goggles.title": "Physical Contraption",

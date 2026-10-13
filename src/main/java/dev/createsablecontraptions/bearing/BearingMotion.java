@@ -37,6 +37,9 @@ public final class BearingMotion {
     private static boolean blocked(ServerLevel level, ControlledContraptionEntity entity, float speed) {
         var own = ElevatorBridge.resolve(level, entity.getContraption());
         if (own == null || entity.getRotationAxis() == null) return BearingStatus.fail(entity,dev.createsablecontraptions.physics.StructureStatus.UNAVAILABLE,"物理结构或旋转轴不可用");
+        if(!AssemblyFrame.available(own))return CollisionState.fail(entity,StructureStatus.UNAVAILABLE);
+        var parent=AssemblyFrame.parent(own);
+        var worldPivot=AssemblyFrame.world(parent,entity.position().add(.5,.5,.5));
         var sublevels = SubLevelContainer.getContainer(level).getAllSubLevels();
         // Cull distant physical structures, but never skip the ordinary world query.
         var plotBounds = own.getPlot().getBoundingBox();
@@ -45,7 +48,7 @@ public final class BearingMotion {
         double ry = Math.max(Math.abs(plotBounds.minY() - plotPivot.y), Math.abs(plotBounds.maxY() + 1 - plotPivot.y));
         double rz = Math.max(Math.abs(plotBounds.minZ() - plotPivot.z), Math.abs(plotBounds.maxZ() + 1 - plotPivot.z));
         double radius = Math.sqrt(rx * rx + ry * ry + rz * rz);
-        var broad = new AABB(entity.position().add(.5, .5, .5), entity.position().add(.5, .5, .5)).inflate(radius);
+        var broad = new AABB(worldPivot, worldPivot).inflate(radius);
         var nearby = sublevels.stream().filter(s -> {
             if (s == own || s.isRemoved()) return false;
             if (dev.createsablecontraptions.oriented.PhysicalFamily.related(entity, s.getUniqueId())) return false;
@@ -56,7 +59,7 @@ public final class BearingMotion {
         int envelopes = 0;
         AABB search = null;
         var anchor = own.getPlot().getCenterBlock();
-        var pivot = new Vector3d(entity.getX() + .5, entity.getY() + .5, entity.getZ() + .5);
+        var pivot = new Vector3d(worldPivot.x,worldPivot.y,worldPivot.z);
         float start = entity.getAngle(1);
         double worldClearance = dev.createsablecontraptions.CscConfig.rotationClearance();
         for (long packed : ElevatorBridge.data(own).getLongArray("Blocks")) {
@@ -70,7 +73,7 @@ public final class BearingMotion {
                 try {
                     sweep = RotatingSweep.envelopes(localBox,
                             pivot, entity.getRotationAxis().ordinal(), Math.toRadians(speed),
-                            t -> BearingBridge.rotation(entity, start + speed * (float) t));
+                            t -> AssemblyFrame.rotation(parent,BearingBridge.rotation(entity, start + speed * (float) t)));
                 } catch (IllegalArgumentException tooLarge) { return BearingStatus.fail(entity,dev.createsablecontraptions.physics.StructureStatus.BUDGET,"单条扫掠超过 2048 段"); }
                 envelopes += sweep.size();
                 if (envelopes > 32768) return BearingStatus.fail(entity,dev.createsablecontraptions.physics.StructureStatus.BUDGET,"扫掠总数超过 32768");
@@ -98,7 +101,7 @@ public final class BearingMotion {
                         if (SweptBox.blocked(moving, zero, obstacle)) { candidate = true; break; }
                     }
                     if (candidate && RotatingSweep.blocked(arc.local, pivot, entity.getRotationAxis().ordinal(), Math.toRadians(speed),
-                            t -> BearingBridge.rotation(entity, start + speed * (float) t), obstacle, worldClearance)) {
+                            t -> AssemblyFrame.rotation(parent,BearingBridge.rotation(entity, start + speed * (float) t)), obstacle, worldClearance)) {
                         blocked = true;
                         BearingStatus.contact(entity, arc.block, pos, arc.local, pivot, obstacle, worldClearance);
                         csc$drill(entity, arc.block, pos, start, speed);
@@ -128,7 +131,7 @@ public final class BearingMotion {
                             if (SweptBox.blocked(moving, zero, obstacle)) { candidate = true; break; }
                         }
                         if (candidate && RotatingSweep.blocked(arc.local, pivot, entity.getRotationAxis().ordinal(), Math.toRadians(speed),
-                                t -> BearingBridge.rotation(entity, start + speed * (float) t), obstacle)) {
+                                t -> AssemblyFrame.rotation(parent,BearingBridge.rotation(entity, start + speed * (float) t)), obstacle)) {
                             blocked = true;
                             BearingStatus.contact(entity, arc.block, pos, arc.local, pivot, obstacle, SweptBox.SKIN);
                             csc$drill(entity, arc.block, pos, start, speed);
@@ -151,10 +154,6 @@ public final class BearingMotion {
     }
 
     private static AABB bounds(SweptBox.Box b) {
-        double x = Math.abs(b.x().x()) * b.half().x() + Math.abs(b.y().x()) * b.half().y() + Math.abs(b.z().x()) * b.half().z();
-        double y = Math.abs(b.x().y()) * b.half().x() + Math.abs(b.y().y()) * b.half().y() + Math.abs(b.z().y()) * b.half().z();
-        double z = Math.abs(b.x().z()) * b.half().x() + Math.abs(b.y().z()) * b.half().y() + Math.abs(b.z().z()) * b.half().z();
-        return new AABB(b.center().x() - x, b.center().y() - y, b.center().z() - z,
-                b.center().x() + x, b.center().y() + y, b.center().z() + z);
+        return dev.createsablecontraptions.elevator.ElevatorCollisions.bounds(b);
     }
 }

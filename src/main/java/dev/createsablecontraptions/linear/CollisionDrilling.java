@@ -58,6 +58,9 @@ public final class CollisionDrilling {
         var center = entity.toGlobalVector(Vec3.atCenterOf(ctx.localPos), 1);
         var facing = entity.applyRotation(Vec3.atLowerCornerOf(ctx.state.getValue(
                 com.simibubi.create.content.kinetics.drill.DrillBlock.FACING).getNormal()), 1);
+        var frame=dev.createsablecontraptions.elevator.AssemblyFrame.at(entity.level(),entity.position());
+        center=dev.createsablecontraptions.elevator.AssemblyFrame.world(frame,center);
+        facing=dev.createsablecontraptions.elevator.AssemblyFrame.direction(frame,facing);
         var worldTarget = Sable.HELPER.projectOutOfSubLevel(ctx.world, target.getCenter());
         var diff = worldTarget.subtract(center);
         return dev.createsablecontraptions.physics.DrillHemisphere.inFront(diff.x, diff.y, diff.z, facing.x, facing.y, facing.z);

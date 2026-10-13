@@ -4,6 +4,7 @@ package dev.createsablecontraptions.physics;
 public final class StructureStatus {
     public static final int UNKNOWN=0,MOVING=1,IDLE=2,COLLISION=3,DRILL=4,DEPLOYER=5,TRANSFER=6,ACTOR=7,STALLED=8;
     public static final int UNLOADED=9,BUDGET=10,BOUNDARY=11,UNAVAILABLE=12;
+    public static final int CONTACT_MISSING=13,ACTIVE_CHILD=14;
     private StructureStatus() {}
     public static int choose(boolean blocked,int actor,boolean stalled,boolean moving) {
         if(actor==DRILL || actor==DEPLOYER || actor==TRANSFER)return actor;
@@ -13,13 +14,14 @@ public final class StructureStatus {
         return moving?MOVING:IDLE;
     }
     public static String stateKey(int code) {
-        return code==MOVING?"moving":code==IDLE?"idle":code>=COLLISION && code<=UNAVAILABLE?"stopped":"waiting";
+        return code==MOVING?"moving":code==IDLE?"idle":code>=COLLISION && code<=ACTIVE_CHILD?"stopped":"waiting";
     }
     public static String reasonKey(int code) {
         return switch(code) {
             case COLLISION->"collision";case DRILL->"drill";case DEPLOYER->"deployer";
             case TRANSFER->"transfer";case ACTOR->"actor";case STALLED->"unspecified";
-            case UNLOADED->"unloaded";case BUDGET->"budget";case BOUNDARY->"boundary";case UNAVAILABLE->"unavailable";default->"";
+            case UNLOADED->"unloaded";case BUDGET->"budget";case BOUNDARY->"boundary";case UNAVAILABLE->"unavailable";
+            case CONTACT_MISSING->"contact_missing";case ACTIVE_CHILD->"active_child";default->"";
         };
     }
 }

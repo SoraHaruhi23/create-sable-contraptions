@@ -20,6 +20,10 @@ public final class CartRenderAlignment {
         var point=sub.renderPose(pt).transformPosition(new Vector3d(anchor.getX()+.5+local.x,anchor.getY()+.5+local.y,anchor.getZ()+.5+local.z));
         var mountOffset=cart.getPassengerRidingPosition(entity).subtract(cart.position()).subtract(entity.getVehicleAttachmentPoint(cart));
         var desired=new Vec3(point.x,point.y-.5,point.z).subtract(mountOffset);
+        var parent=dev.createsablecontraptions.elevator.AssemblyFrame.at(cart.level(),cart.position());
+        if(parent instanceof ClientSubLevel frame)
+            desired=frame.renderPose(pt).transformPositionInverse(new Vec3(point.x,point.y,point.z))
+                    .subtract(0,.5,0).subtract(mountOffset);
         var interpolated=new Vec3(Mth.lerp(pt,cart.xOld,cart.getX()),Mth.lerp(pt,cart.yOld,cart.getY()),Mth.lerp(pt,cart.zOld,cart.getZ()));
         var nativeOrigin=interpolated;
         var rail=cart.getPos(interpolated.x,interpolated.y,interpolated.z);

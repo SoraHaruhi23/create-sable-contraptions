@@ -40,8 +40,10 @@ public abstract class ElevatorPulleyMixin {
         if (factor < .999f) { arrived = false; prevSpeed = speed; cir.setReturnValue(speed); }
         csc$acceptedSpeed = speed;
         double delta = arrived ? -(getTargetOffset() - pulley.offset) : -speed;
-        boolean blocked = !dev.createsablecontraptions.elevator.ElevatorEditing.contactIntact(server, elevator)
-                || ElevatorCollisions.blocked(server, elevator, entity.position(), new Vec3(0, delta, 0));
+        boolean intact = dev.createsablecontraptions.elevator.ElevatorEditing.contactIntact(server, elevator);
+        boolean blocked = intact ? ElevatorCollisions.blocked(server, elevator, entity.position(), new Vec3(0, delta, 0))
+                : dev.createsablecontraptions.physics.CollisionState.fail(entity,
+                    dev.createsablecontraptions.physics.StructureStatus.CONTACT_MISSING);
         if (blocked) dev.createsablecontraptions.elevator.ElevatorActors.probeBreakers(entity, new Vec3(0, delta, 0));
         csc$setStall(entity, blocked);
         if (entity.isStalled()) {

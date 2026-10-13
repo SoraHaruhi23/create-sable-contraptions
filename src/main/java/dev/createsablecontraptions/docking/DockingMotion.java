@@ -83,7 +83,8 @@ public final class DockingMotion {
                             || stationary.isPowered() || stationary.getBlockState().getBlock() != ctx.state.getBlock()
                             || stationary.getBlockState().getValue(PortableStorageInterfaceBlock.FACING) != facing.getOpposite()) continue;
                     var containing = dev.ryanhcode.sable.Sable.HELPER.getContaining(e.level(), pos);
-                    if (containing != null) continue; // Native stationary-world docking; do not mistake our own plot for a dock.
+                    // The source parent is a valid dock frame; the converted child's plot is not.
+                    if (containing != dev.createsablecontraptions.elevator.AssemblyFrame.at(e.level(), e.position())) continue;
                     var connected = ((dev.createsablecontraptions.mixin.PortableInterfaceAccessor) stationary).csc$connectedEntity();
                     if (connected != null && connected != owner && connected.isAlive()) continue;
                     nearest = Math.min(nearest, distance + .25);

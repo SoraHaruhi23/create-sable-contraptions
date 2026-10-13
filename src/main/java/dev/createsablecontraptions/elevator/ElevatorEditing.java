@@ -38,9 +38,17 @@ public final class ElevatorEditing {
         if (sub == null) return false;
         var anchor = BlockPos.of(ElevatorBridge.data(sub).getLong("PlotAnchor"));
         // Ordinary redstone/state changes are valid; only losing the original column contact stops travel.
-        for (var info : elevator.getBlocks().values())
-            if (AllBlocks.REDSTONE_CONTACT.has(info.state()) && !ElevatorBridge.samePlatformState(level.getBlockState(anchor.offset(info.pos())), info.state())) return false;
-        return true;
+        var local = columnContact(elevator);
+        var state = level.getBlockState(anchor.offset(local));
+        return AllBlocks.REDSTONE_CONTACT.has(state)
+                && state.getValue(com.simibubi.create.content.redstone.contact.RedstoneContactBlock.FACING)
+                    == elevator.getGlobalColumn().side().getOpposite();
+    }
+
+    public static BlockPos columnContact(ElevatorContraption elevator) {
+        var column = elevator.getGlobalColumn();
+        return new BlockPos(column.x() - elevator.anchor.getX(), elevator.getContactYOffset(),
+                column.z() - elevator.anchor.getZ()).relative(column.side());
     }
 
     /** Rebuild once after loading, and before dismantling, from real nonempty plot sections. */

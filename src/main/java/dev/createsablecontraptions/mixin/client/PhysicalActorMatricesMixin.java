@@ -18,7 +18,7 @@ public abstract class PhysicalActorMatricesMixin {
         float pt = AnimationTickHolder.getPartialTicks();
         var corrected = new PoseStack();
         if (!PhysicalActorTransform.apply(corrected, entity, pt, Mth.lerp(pt, entity.xOld, entity.getX()),
-                Mth.lerp(pt, entity.yOld, entity.getY()), Mth.lerp(pt, entity.zOld, entity.getZ()))) return;
+                Mth.lerp(pt, entity.yOld, entity.getY()), Mth.lerp(pt, entity.zOld, entity.getZ()), true)) return;
         var matrices = (ContraptionMatrices) (Object) this;
         matrices.getModel().setIdentity();
         ContraptionMatrices.transform(matrices.getModel(), corrected);

@@ -6,6 +6,17 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class RotatingSweepTest {
+    @Test void tiltedParentRotatesTheWholeSweepIntoWorldSpace() {
+        var parent = new Quaterniond(Math.sin(Math.PI / 4), 0, 0, Math.cos(Math.PI / 4));
+        var pivot = new Vector3d(10, 60, -20);
+        java.util.function.DoubleFunction<org.joml.Quaterniondc> rotation = t -> new Quaterniond(parent)
+                .mul(new Quaterniond().rotationZ(t * Math.PI / 2));
+        // Local XY arc becomes world XZ; the old untransformed XY target must not hit.
+        assertTrue(RotatingSweep.blocked(ARM, pivot, 2, Math.PI / 2, rotation,
+                SweptBox.Box.aligned(12, 59.9, -18, 12.2, 60.1, -17.8)));
+        assertFalse(RotatingSweep.blocked(ARM, pivot, 2, Math.PI / 2, rotation,
+                SweptBox.Box.aligned(12, 62, -20.1, 12.2, 62.2, -19.9)));
+    }
     @Test void provenMidpointCollisionDoesNotNeedRecursiveRefinement() {
         var calls = new java.util.concurrent.atomic.AtomicInteger();
         assertTrue(RotatingSweep.blocked(ARM, ZERO, 2, Math.PI / 2, t -> {

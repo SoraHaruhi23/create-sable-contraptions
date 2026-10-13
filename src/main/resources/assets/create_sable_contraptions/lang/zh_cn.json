@@ -1,7 +1,11 @@
 {
+  "csc.assembly.active_inner": "请先装配外层，再装配内层。移动内层控制器前，请先拆卸其正在运行的机构。",
+  "csc.assembly.unpack_inner": "请先拆卸内层机构，再打包矿车。",
+  "csc.goggles.reason.active_child": "原因：请先拆卸内层机构",
+  "csc.goggles.reason.contact_missing": "原因：电梯定位接触器缺失或方向改变",
   "csc.assembly.assembler_protected": "此结构由机械动力控制，不能使用物理组装器；请通过原控制部件拆卸。",
   "csc.assembly.failed": "Sable 结构装配失败；已尝试恢复原方块，详情请查看日志。",
-  "csc.assembly.nested": "当前物理化要求控制部件和待装配结构位于静态世界中，暂不支持嵌套装配。",
+  "csc.assembly.nested": "装配要求父物理结构可用且未缩放。",
   "csc.goggles.reason.drill": "原因：钻头正在破坏方块",
   "csc.goggles.reason.deployer": "原因：机械手正在工作",
   "csc.goggles.title": "物理动态结构",

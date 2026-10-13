@@ -121,9 +121,9 @@ public final class PhysicalStorage extends MountedStorageManager {
         FluidView(MountedFluidStorageType<?> type, BlockPos local) { super(type); this.local = local; }
         private IFluidHandler cap() { return fluid(local); }
         @Override public int getTanks() { var c = cap(); return c == null ? 0 : c.getTanks(); }
-        @Override public FluidStack getFluidInTank(int tank) { var c = cap(); return c == null || tank >= c.getTanks() ? FluidStack.EMPTY : c.getFluidInTank(tank); }
-        @Override public int getTankCapacity(int tank) { var c = cap(); return c == null || tank >= c.getTanks() ? 0 : c.getTankCapacity(tank); }
-        @Override public boolean isFluidValid(int tank, FluidStack stack) { var c = cap(); return c != null && tank < c.getTanks() && c.isFluidValid(tank, stack); }
+        @Override public FluidStack getFluidInTank(int tank) { var c = cap(); return c == null || tank < 0 || tank >= c.getTanks() ? FluidStack.EMPTY : c.getFluidInTank(tank); }
+        @Override public int getTankCapacity(int tank) { var c = cap(); return c == null || tank < 0 || tank >= c.getTanks() ? 0 : c.getTankCapacity(tank); }
+        @Override public boolean isFluidValid(int tank, FluidStack stack) { var c = cap(); return c != null && tank >= 0 && tank < c.getTanks() && c.isFluidValid(tank, stack); }
         @Override public int fill(FluidStack stack, FluidAction action) { var c = cap(); return c == null ? 0 : c.fill(stack, action); }
         @Override public FluidStack drain(FluidStack stack, FluidAction action) { var c = cap(); return c == null ? FluidStack.EMPTY : c.drain(stack, action); }
         @Override public FluidStack drain(int max, FluidAction action) { var c = cap(); return c == null ? FluidStack.EMPTY : c.drain(max, action); }

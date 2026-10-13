@@ -1,7 +1,11 @@
 {
+  "csc.assembly.active_inner": "外側の構造を先に組み立て、その後で内側の機構を組み立ててください。内側の制御装置を移動する前に、その機構を解体してください。",
+  "csc.assembly.unpack_inner": "トロッコを回収する前に、内側の機構を解体してください。",
+  "csc.goggles.reason.active_child": "理由：先に内側の装置を分解してください",
+  "csc.goggles.reason.contact_missing": "理由：エレベーターの位置決め接点がないか、向きが変わっています",
   "csc.assembly.assembler_protected": "この構造物は Create が制御しています。物理アセンブラーではなく、元の制御装置から分解してください。",
   "csc.assembly.failed": "Sable 構造物の組み立てに失敗しました。可能な範囲でブロックを復元しました。詳細はログを確認してください。",
-  "csc.assembly.nested": "制御装置と組み立て対象は静止したワールドに置く必要があります。入れ子の組み立てには未対応です。",
+  "csc.assembly.nested": "組み立てには、有効で拡大縮小されていない親サブレベルが必要です。",
   "csc.goggles.title": "物理コントラプション",
   "csc.goggles.state.idle": "状態：静止",
   "csc.goggles.state.moving": "状態：動作中",

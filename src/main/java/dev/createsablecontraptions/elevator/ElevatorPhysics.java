@@ -21,7 +21,7 @@ import java.util.EnumSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-/** Hard world constraint + authoritative target pose, rebuilt from Sable's saved user data. */
+/** Parent/world constraint and authoritative pose, rebuilt from Sable's saved user data. */
 public final class ElevatorPhysics {
     public static final SubLevelLoadingTicketType<Unit> TICKET = SubLevelLoadingTicketType.create(
             ResourceLocation.fromNamespaceAndPath(CreateSableContraptions.ID, "elevator"), Unit.CODEC);
@@ -41,6 +41,8 @@ public final class ElevatorPhysics {
         if (sub.isRemoved()) return;
         var data = ElevatorBridge.data(sub);
         BlockPos plotAnchor = BlockPos.of(data.getLong("PlotAnchor"));
+        if(!AssemblyFrame.available(sub)) return; // Keep the last valid constraint; never target orphan plot coordinates.
+        var parent=AssemblyFrame.parent(sub);
         var pipeline = SubLevelContainer.getContainer(sub.getLevel()).physicsSystem().getPipeline();
         Vector3d localAnchor = new Vector3d(plotAnchor.getX() + .5, plotAnchor.getY() + .5, plotAnchor.getZ() + .5);
         Vector3d worldAnchor = new Vector3d(data.getDouble("X") + .5, data.getDouble("Y") + .5, data.getDouble("Z") + .5);
@@ -48,19 +50,34 @@ public final class ElevatorPhysics {
                 data.getDouble("QZ"), data.getDouble("QW")).normalize() : new Quaterniond();
         var joint = JOINTS.get(sub);
         if (joint == null || !joint.isValid()) {
-            joint = pipeline.addConstraint(sub, null, new GenericConstraintConfiguration(localAnchor, worldAnchor,
+            joint = pipeline.addConstraint(sub, parent, new GenericConstraintConfiguration(localAnchor, worldAnchor,
                     new Quaterniond(), rotation, EnumSet.allOf(ConstraintJointAxis.class)));
             if (joint == null || !joint.isValid()) throw new IllegalStateException("Sable physics backend must support generic constraints");
             JOINTS.put(sub, joint);
         }
         joint.setFrame2(worldAnchor, rotation);
+        // Stored targets are in the source plot. Compose afresh each physics step,
+        // including while the actuator is stopped and only its parent is moving.
+        if(parent!=null) {
+            parent.logicalPose().transformPosition(worldAnchor);
+            rotation=AssemblyFrame.rotation(parent,rotation);
+        }
         // Sable stores the body's position at its rotation point (normally the center of mass).
         Vector3d position = dev.createsablecontraptions.physics.RotatingFrame.bodyPosition(
                 sub.logicalPose().rotationPoint(), localAnchor, worldAnchor, rotation);
         pipeline.teleport(sub, position, rotation);
         RigidBodyHandle handle = RigidBodyHandle.of(sub);
-        handle.addLinearAndAngularVelocity(handle.getLinearVelocity(new Vector3d()).negate(),
-                handle.getAngularVelocity(new Vector3d()).negate());
+        var linear = new Vector3d();
+        var angular = new Vector3d();
+        if (parent != null) {
+            var parentHandle = RigidBodyHandle.of(parent);
+            parentHandle.getAngularVelocity(angular);
+            parentHandle.getLinearVelocity(linear);
+            // A moving source frame must not fight an artificially stationary child.
+            linear.add(new Vector3d(angular).cross(new Vector3d(position).sub(parent.logicalPose().position())));
+        }
+        handle.addLinearAndAngularVelocity(linear.sub(handle.getLinearVelocity(new Vector3d())),
+                angular.sub(handle.getAngularVelocity(new Vector3d())));
         sub.logicalPose().position().set(position);
         sub.logicalPose().orientation().set(rotation);
         // updatePose ran before the post-physics correction. Publish the corrected
@@ -93,17 +110,22 @@ public final class ElevatorPhysics {
             }
         }
         JOINTS.entrySet().removeIf(entry -> entry.getKey().isRemoved());
-        for (ServerSubLevel sub : container.getAllSubLevels()) if (ElevatorBridge.managed(sub)) hold(sub);
+        holdOrdered(container.getAllSubLevels());
     }
 
     public static void afterPhysics(ForgeSablePostPhysicsTickEvent event) {
         var container = SubLevelContainer.getContainer(event.getPhysicsSystem().getLevel());
-        for (ServerSubLevel sub : container.getAllSubLevels()) if (ElevatorBridge.managed(sub)) hold(sub);
+        holdOrdered(container.getAllSubLevels());
         for(var ref:com.simibubi.create.content.contraptions.ContraptionHandler.loadedContraptions.get(event.getPhysicsSystem().getLevel()).values()) {
             var entity=ref.get();
             if(entity instanceof com.simibubi.create.content.contraptions.OrientedContraptionEntity && ElevatorLink.managed(entity.getContraption()))
                 dev.createsablecontraptions.oriented.OrientedBridge.bounds(entity);
         }
+    }
+
+    private static void holdOrdered(java.util.Collection<ServerSubLevel> bodies) {
+        for (var sub : dev.createsablecontraptions.physics.ParentFrames.ordered(bodies, AssemblyFrame::parent))
+            if (ElevatorBridge.managed(sub)) hold(sub);
     }
 
     public static void release(ServerSubLevel sub) {

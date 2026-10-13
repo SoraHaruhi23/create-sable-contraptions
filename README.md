@@ -1,6 +1,6 @@
 # Create: Sable Contraptions
 
-**机械动力：物理动态结构 · 0.7.7-beta**
+**机械动力：物理动态结构 · 0.8.0-beta**
 
 ## English
 
@@ -9,6 +9,7 @@ Brings Create contraptions into Sable physics while retaining their controls and
 - Supports elevators, mechanical/windmill/clockwork bearings, rope pulleys, mechanical pistons, gantries, minecart contraptions, and stabilized children.
 - Includes collision stopping, editing while moving, live inventory/fluid access, and portable interface docking.
 - Offers goggle status hints and in-game configuration, with Simplified Chinese, Traditional Chinese, English, and Japanese UI.
+- Supports assembly on unscaled Sable sublevels, following the parent pose and disassembling back into its plot.
 - Regular Create trains are outside the conversion scope.
 
 **Requirements:** Minecraft 1.21.1, Java 21, NeoForge 21.1.228+, Create 6.0.10+, and Sable 2.0.3+. Compatibility with newer dependency versions is not guaranteed.
@@ -24,6 +25,7 @@ Beta release. Complex coupling, third-party components, and long-running perform
 - 支持电梯、三类轴承、绳索滑轮、动力活塞、龙门、矿车结构及稳定子结构。
 - 支持碰撞停转、运行中编辑、真实库存与流体访问，以及便携式接口对接。
 - 提供工程师护目镜状态提示和游戏内配置，界面支持简中、繁中、英语、日语。
+- 支持在未缩放的 Sable sublevel 上装配，跟随父结构姿态，并拆卸回父结构。
 - 普通 Create 列车不在物理化范围内。
 
 **环境：** Minecraft 1.21.1、Java 21、NeoForge 21.1.228+、Create 6.0.10+、Sable 2.0.3+。较新依赖版本不保证兼容。
@@ -42,7 +44,7 @@ Build with Java 21 / 使用 Java 21 构建：
 ./gradlew.bat build --console=plain
 ```
 
-[Documentation / 文档目录](docs/README.md) · [Release notes / 发布说明](docs/RELEASE-0.7.7-beta.md) · [Changelog / 更新记录](CHANGELOG.md) · [Testing & limitations / 测试与限制](docs/VALIDATION.md) · [GitHub guide / GitHub 教程](docs/publishing/GITHUB-QUICKSTART.md)
+[Documentation / 文档目录](docs/README.md) · [Release notes / 发布说明](docs/RELEASE-0.8.0-beta.md) · [Changelog / 更新记录](CHANGELOG.md) · [Testing & limitations / 测试与限制](docs/VALIDATION.md) · [GitHub guide / GitHub 教程](docs/publishing/GITHUB-QUICKSTART.md)
 
 **License: [LGPL-3.0-or-later](LICENSE).** [Copyright / 版权声明](NOTICE.md) · [Third-party notices / 第三方说明](THIRD_PARTY_NOTICES.md).
 

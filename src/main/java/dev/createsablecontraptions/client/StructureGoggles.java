@@ -57,19 +57,25 @@ public final class StructureGoggles {
         if(level==null || !level.isLoaded(pos) || level.getBlockState(pos).isAir())return;
         var shape=level.getBlockState(pos).getCollisionShape(level,pos);
         if(shape.isEmpty())return;
-        var bounds=shape.bounds().move(pos);
         var sub=Sable.HELPER.getContaining(level,pos);
-        if(sub instanceof dev.ryanhcode.sable.sublevel.ClientSubLevel client) {
-            net.minecraft.world.phys.AABB world=null;
+        float pt=Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
+        int part=0;
+        for (var box : shape.toAabbs()) {
+            var bounds=box.move(pos).inflate(.002);
+            var corners=new net.minecraft.world.phys.Vec3[8];
             for(int i=0;i<8;i++) {
-                var point=client.renderPose(Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false)).transformPosition(new org.joml.Vector3d((i&1)==0?bounds.minX:bounds.maxX,
-                        (i&2)==0?bounds.minY:bounds.maxY,(i&4)==0?bounds.minZ:bounds.maxZ));
-                var corner=new net.minecraft.world.phys.AABB(point.x,point.y,point.z,point.x,point.y,point.z);
-                world=world==null?corner:world.minmax(corner);
+                var point=new net.minecraft.world.phys.Vec3((i&1)==0?bounds.minX:bounds.maxX,
+                        (i&2)==0?bounds.minY:bounds.maxY,(i&4)==0?bounds.minZ:bounds.maxZ);
+                corners[i]=sub instanceof dev.ryanhcode.sable.sublevel.ClientSubLevel client
+                        ? client.renderPose(pt).transformPosition(point) : point;
             }
-            bounds=world;
+            for(int i=0;i<8;i++) for(int axis=1;axis<=4;axis<<=1) {
+                if((i&axis)!=0)continue;
+                net.createmod.catnip.outliner.Outliner.getInstance()
+                        .showLine(java.util.List.of("csc_collision",pos.immutable(),part,i,axis),corners[i],corners[i|axis])
+                        .colored(0xff5555).lineWidth(1/32f);
+            }
+            part++;
         }
-        net.createmod.catnip.outliner.Outliner.getInstance().showAABB("csc_collision",bounds.inflate(.002))
-                .colored(0xff5555).lineWidth(1/32f);
     }
 }

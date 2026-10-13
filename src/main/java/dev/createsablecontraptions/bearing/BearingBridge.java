@@ -56,13 +56,15 @@ public final class BearingBridge {
                                           Set<BlockPos> destinations) {
         var sub = ElevatorBridge.resolve(level, contraption);
         if (sub == null || !ElevatorEditing.reconcile(sub)) return dev.createsablecontraptions.oriented.DisassemblyStatus.record(contraption,"物理结构不可用或方块索引未就绪",false);
+        if (AssemblyFrame.hasChildren(sub)) return dev.createsablecontraptions.oriented.DisassemblyStatus.record(contraption,"请先拆卸父物理结构上的嵌套机构",false);
         for (long packed : ElevatorBridge.data(sub).getLongArray("Blocks")) {
             if (dev.createsablecontraptions.oriented.OrientedBridge.virtualAnchor(contraption, BlockPos.of(packed))) continue;
             var dest = transform.apply(BlockPos.of(packed));
+            if(!AssemblyFrame.destination(sub,dest))return dev.createsablecontraptions.oriented.DisassemblyStatus.record(contraption,"父结构不可用或拆卸目标不属于装配坐标系",false);
             var state = level.getBlockState(sub.getPlot().getCenterBlock().offset(BlockPos.of(packed)));
             boolean cylinderSlot = dev.createsablecontraptions.linear.PistonParts.cylinderSlot(contraption, dest, state);
             if (!destinations.add(dest)) return dev.createsablecontraptions.oriented.DisassemblyStatus.record(contraption,"主/子结构目标重叠："+dest.toShortString(),false);
-            if(level.isOutsideBuildHeight(dest) || !level.getWorldBorder().isWithinBounds(dest) || !level.isLoaded(dest))
+            if(!AssemblyFrame.withinWorld(sub, dest) || !level.isLoaded(dest))
                 return dev.createsablecontraptions.oriented.DisassemblyStatus.record(contraption,"目标超出边界或未加载："+dest.toShortString(),false);
             if(!DisassemblyPlacement.canReplace(level,dest,transform.apply(state))
                     && !(cylinderSlot && dev.createsablecontraptions.linear.PistonParts.cylinder(level.getBlockState(dest))))
@@ -92,7 +94,7 @@ public final class BearingBridge {
                 e -> !e.isPassenger() && !(e instanceof com.simibubi.create.content.contraptions.AbstractContraptionEntity)
                         && dev.ryanhcode.sable.Sable.HELPER.getTrackingSubLevel(e) == sub)) {
             Vec3 local = sub.logicalPose().transformPositionInverse(rider.position()).subtract(Vec3.atLowerCornerOf(anchor));
-            riderTargets.put(rider, transform.apply(local).add(0, 1 / 16.0, 0));
+            riderTargets.put(rider, AssemblyFrame.world(AssemblyFrame.parent(sub),transform.apply(local)).add(0, 1 / 16.0, 0));
         }
         var glue = data.getList("Glue", Tag.TAG_COMPOUND).copy();
         List<BlockPos> all = Arrays.stream(data.getLongArray("Blocks")).mapToObj(p -> anchor.offset(BlockPos.of(p))).toList();
@@ -141,9 +143,9 @@ public final class BearingBridge {
                 throw new IllegalStateException("Bearing transfer verification failed; recovery required");
             if (be != null) { transform.apply(be); be.setChanged(); }
         }
-        SubLevelAssemblyHelper.moveTrackingPoints(level, bounds, null, transfer);
+        SubLevelAssemblyHelper.moveTrackingPoints(level, bounds, AssemblyFrame.parent(sub), transfer);
         riderTargets.forEach((rider, pos) -> {
-            ((dev.ryanhcode.sable.mixinterface.entity.entity_sublevel_collision.EntityMovementExtension) rider).sable$setTrackingSubLevel(null);
+            ((dev.ryanhcode.sable.mixinterface.entity.entity_sublevel_collision.EntityMovementExtension) rider).sable$setTrackingSubLevel(AssemblyFrame.parent(sub));
             rider.teleportTo(pos.x, pos.y, pos.z);
         });
         ElevatorPhysics.release(sub);

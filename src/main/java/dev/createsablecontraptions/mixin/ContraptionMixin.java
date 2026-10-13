@@ -45,6 +45,7 @@ public abstract class ContraptionMixin {
     private void csc$assemble(Level level, BlockPos offset, CallbackInfo ci) throws AssemblyException {
         var elevator = (Contraption) (Object) this;
         if (ElevatorLink.supported(elevator) && level instanceof ServerLevel server) {
+            dev.createsablecontraptions.elevator.AssemblyFrame.validateControllers(server, elevator, offset);
             try {
                 ElevatorBridge.assemble(server, elevator, offset);
             } catch (RuntimeException failure) {

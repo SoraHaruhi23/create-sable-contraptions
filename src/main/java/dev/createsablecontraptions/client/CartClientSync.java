@@ -27,6 +27,12 @@ public final class CartClientSync {
             var offset=cart.getPassengerRidingPosition(root).subtract(cart.position()).subtract(root.getVehicleAttachmentPoint(cart));
             var previous=position(sub,local,0).subtract(offset);
             var current=position(sub,local,1).subtract(offset);
+            var parent=dev.createsablecontraptions.elevator.AssemblyFrame.at(level,cart.position());
+            if(parent instanceof ClientSubLevel frame) {
+                // The cart itself lives in the parent plot; Sable renders that plot in world space.
+                previous=frame.renderPose(0).transformPositionInverse(previous.add(offset).add(0,.5,0)).subtract(0,.5,0).subtract(offset);
+                current=frame.renderPose(1).transformPositionInverse(current.add(offset).add(0,.5,0)).subtract(0,.5,0).subtract(offset);
+            }
             cart.setPos(current);
             cart.xOld=cart.xo=previous.x;cart.yOld=cart.yo=previous.y;cart.zOld=cart.zo=previous.z;
             for(var passenger:cart.getPassengers())cart.positionRider(passenger);

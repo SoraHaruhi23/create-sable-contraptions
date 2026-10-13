@@ -1,6 +1,6 @@
 # Documentation / 文档
 
-- [Release notes / 发布说明](RELEASE-0.7.7-beta.md)
+- [Release notes / 发布说明](RELEASE-0.8.0-beta.md)
 - [Testing & limitations / 测试与限制](VALIDATION.md)
 - [Legacy migration / 旧版本迁移](MIGRATION-0.7.3.md)
 
