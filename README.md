@@ -1,6 +1,4 @@
-# Create: Sable Contraptions
-
-**机械动力：物理动态结构 · 0.8.0-beta**
+<h1 align="center">Create: Sable Contraptions</h1>
 
 ## English
 
