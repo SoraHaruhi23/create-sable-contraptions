@@ -10,6 +10,7 @@
 
 ### Regression checklist
 
+- [ ] Assemble structures with pressure plates and attached blocks; check supports, inventories, rollback after failed assembly and coupled-cart retries.
 - [ ] With Steam 'n' Rails installed, change sliding-door modes after assembly, including while stopped at a floor; check manual/automatic operation and save/reload.
 - [ ] Assemble, run, reverse, stop/resume, return and disassemble each supported mechanism.
 - [ ] Check minecart curves, slopes, coupled carts, riding, assembler access, pickup and placement; drills must protect assembly sources.
@@ -30,6 +31,7 @@ Report exact mod/dependency versions, reproduction steps, expected and actual re
 
 ### 回归清单
 
+- [ ] 装配带压力板及附着方块的结构，检查支撑、库存、失败后的回滚及耦合矿车重试。
 - [ ] 安装汽鸣铁道后，在装配状态下切换门模式（包括停在楼层时），检查手动／自动开门及保存重载。
 - [ ] 各类机构装配、运行、反转、停止恢复、归位及拆卸。
 - [ ] 矿车弯道、坡道、耦合、乘坐、装配站进出、收起放置；钻头保护装配源头。

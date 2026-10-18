@@ -2,6 +2,11 @@
 
 ## English
 
+### 0.8.1-beta
+
+- Defer assembly neighbour callbacks until supports, ownership and validation are complete; restore rollback blocks before notifying neighbours.
+- Report minecart transfer failures through the assembler error display, and remove failed-attempt contraption couplings.
+
 ### 0.8.0-beta
 
 - Synchronize live sliding-door settings with movement behaviours after wrench mode changes.
@@ -21,6 +26,11 @@
 - Include fluid tank updates and portable-interface animation fixes.
 
 ## 中文
+
+### 0.8.1-beta
+
+- 装配邻居通知延后到支撑、归属及校验完成；回滚先恢复全部方块和数据再通知。
+- 捕获矿车搬运阶段的装配异常，显示装配站错误并清理本次失败新增的结构耦合。
 
 ### 0.8.0-beta
 

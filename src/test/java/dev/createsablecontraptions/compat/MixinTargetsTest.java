@@ -18,6 +18,22 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /** Checks pinned dependency bytecode without loading Minecraft, Mixins or native physics. */
 class MixinTargetsTest {
+    @Test void cartTransferFailureIsReportedAndAssemblyNotificationsAreDeferred() throws Exception {
+        var cart = compiled("mixin/CartAssemblerMixin");
+        var wrapper = cart.methods.stream().filter(m -> m.name.equals("csc$reportTransferFailure")).findFirst().orElseThrow();
+        assertTrue(callIndex(wrapper,"call") >= 0);
+        assertTrue(callIndex(wrapper,"sendData") > callIndex(wrapper,"call"));
+        assertTrue(callIndex(wrapper,"removeConnection") > callIndex(wrapper,"call"));
+        assertTrue(wrapper.tryCatchBlocks.stream().anyMatch(t -> "java/lang/Exception".equals(t.type)));
+        var bridge = compiled("elevator/ElevatorBridge").methods.stream().filter(m -> m.name.equals("assemble")).findFirst().orElseThrow();
+        assertTrue(callIndex(bridge,"begin") < callIndex(bridge,"assembleBlocks"));
+        assertTrue(callIndex(bridge,"commit") > callIndex(bridge,"csc$setSubLevel"));
+        var sable = dependency("dev/ryanhcode/sable/api/SubLevelAssemblyHelper");
+        long notifications = sable.methods.stream().filter(m -> m.name.equals("moveBlocks"))
+                .flatMap(m -> java.util.Arrays.stream(m.instructions.toArray()))
+                .filter(i -> i instanceof MethodInsnNode c && c.name.equals("markAndNotifyBlock")).count();
+        assertEquals(1,notifications,"The delayed destination notification must resolve exactly once");
+    }
     @Test void physicalDoorSettingsRefreshBeforeActorCheckpoint() throws Exception {
         var actors = compiled("elevator/ElevatorActors");
         var prepare = actors.methods.stream().filter(m -> m.name.equals("prepare")).findFirst().orElseThrow();

@@ -13,6 +13,30 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = CartAssemblerBlockEntity.class, remap = false)
 public abstract class CartAssemblerMixin {
+    @org.spongepowered.asm.mixin.Shadow protected com.simibubi.create.content.contraptions.AssemblyException lastException;
+
+    @com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod(method = "assemble")
+    private void csc$reportTransferFailure(Level world, BlockPos pos, AbstractMinecart cart,
+            com.llamalad7.mixinextras.injector.wrapoperation.Operation<Void> original) {
+        var previousPosition = cart.position();
+        try {
+            original.call(world, pos, cart);
+        } catch (Exception failure) {
+            if (!(failure instanceof com.simibubi.create.content.contraptions.AssemblyException assembly)) throw failure;
+            // Create only catches exceptions from the scan, but our physical transfer can also fail.
+            // A cart with an existing contraption coupling exits before assembly, so any such link
+            // here was just created by this failed attempt. Leave ordinary coupling chains intact.
+            var controller = cart.getData(com.simibubi.create.AllAttachmentTypes.MINECART_CONTROLLER);
+            for (boolean forward : new boolean[]{true, false}) if (controller.hasContraptionCoupling(forward)) {
+                var other = com.simibubi.create.content.contraptions.minecart.CouplingHandler.getNextInCouplingChain(world, controller, forward);
+                controller.removeConnection(forward);
+                if (other != null) other.removeConnection(!forward);
+            }
+            cart.setPos(previousPosition);
+            lastException = assembly;
+            ((CartAssemblerBlockEntity) (Object) this).sendData();
+        }
+    }
     @com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation(method="disassemble",
             at=@At(value="INVOKE",target="Ljava/util/List;get(I)Ljava/lang/Object;"))
     private Object csc$findPhysicalPassenger(java.util.List<?> passengers,int index,

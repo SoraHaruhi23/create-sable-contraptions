@@ -71,6 +71,7 @@ public final class ElevatorBridge {
                     be == null ? null : be.saveWithFullMetadata(level.registryAccess())));
         }
         ServerSubLevel sub = null;
+        try (var updates = AssemblyUpdates.begin()) {
         try {
             boolean before = dev.createsablecontraptions.linear.GantrySupport.beginTransfer();
             try { sub = SubLevelAssemblyHelper.assembleBlocks(level, origin, source, bounds); }
@@ -82,7 +83,9 @@ public final class ElevatorBridge {
             for (StructureBlockInfo info : backup) {
                 BlockPos dest = plotAnchor.offset(info.pos().subtract(origin));
                 if (level.getBlockState(dest).getBlock() != info.state().getBlock() || !level.getBlockState(info.pos()).isAir())
-                    throw new IllegalStateException("Sable block transfer verification failed at " + info.pos());
+                    throw new IllegalStateException("Sable block transfer verification failed at " + info.pos()
+                            + "; expected=" + info.state() + "; source=" + level.getBlockState(info.pos())
+                            + "; destination=" + level.getBlockState(dest));
                 if (info.nbt() != null && level.getBlockEntity(dest) == null)
                     throw new IllegalStateException("Sable block entity transfer failed at " + info.pos());
             }
@@ -131,11 +134,21 @@ public final class ElevatorBridge {
                 SubLevelContainer.getContainer(level).removeSubLevel(sub, SubLevelRemovalReason.REMOVED);
             }
             for (StructureBlockInfo info : backup) {
-                level.setBlock(info.pos(), info.state(), Block.UPDATE_ALL);
+                level.setBlock(info.pos(), info.state(), Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
+            }
+            for (StructureBlockInfo info : backup) {
                 var be = level.getBlockEntity(info.pos());
                 if (be != null && info.nbt() != null) be.loadWithComponents(info.nbt(), level.registryAccess());
             }
+            // Restore every support block and inventory before enabling neighbour callbacks again.
+            for (StructureBlockInfo info : backup)
+                SubLevelAssemblyHelper.markAndNotifyBlock(level, info.pos(), level.getChunkAt(info.pos()),
+                        Blocks.AIR.defaultBlockState(), info.state(), Block.UPDATE_ALL, 512);
             throw failure;
+        }
+        // This runs after ownership, synthetic supports and the verification pass. Never roll back
+        // a committed structure merely because a later ordinary neighbour callback throws.
+        updates.commit();
         }
     }
 

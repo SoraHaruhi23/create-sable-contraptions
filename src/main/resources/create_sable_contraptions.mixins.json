@@ -16,6 +16,7 @@
     "CartMoveMixin",
     "CartSelfCollisionMixin",
     "CartAssemblerMixin",
+    "AssemblyUpdatesMixin",
     "PortableInterfaceAccessor",
     "BearingEntityMixin",
     "ControlledContraptionAccessor",
